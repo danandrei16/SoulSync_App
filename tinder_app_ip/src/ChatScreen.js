@@ -1,52 +1,91 @@
-import React, { useState } from 'react'
-import './ChatScreen.css'
+import React, { useState, useEffect } from 'react';
+import './ChatScreen.css';
 import { Avatar } from '@mui/material';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+import { useParams } from 'react-router-dom';
 
 function ChatScreen() {
-    const[input,setInput]=useState('');
-    const[messages,setMessages]=useState([
-        {
-            name:'Ellen',
-            Image:'https://imageio.forbes.com/specials-images/imageserve/5ed560d07fe4060006bbce1e/0x0.jpg?format=jpg&crop=878,879,x422,y0,safe&height=416&width=416&fit=bounds',
-            message:'Whats up❤️?'
-        },
-        {
-            name:'Ellen',
-            Image:'https://imageio.forbes.com/specials-images/imageserve/5ed560d07fe4060006bbce1e/0x0.jpg?format=jpg&crop=878,879,x422,y0,safe&height=416&width=416&fit=bounds',
-            message:'How it going!'
-        },
-        {
-            message:'Hi! How are you Ellen!'
-        }
-    ]);
-    const handleSend=e=>{
+    const [input, setInput] = useState('');
+    const [messages, setMessages] = useState([]);
+    const [matchedUser, setMatchedUser] = useState(null);
+    const { person } = useParams(); // Extract the 'person' parameter from the URL
+
+    useEffect(() => {
+        // Fetch matched user's data from Firebase Firestore
+        const fetchMatchedUser = async () => {
+            try {
+                const matchedUserDoc = await firebase.firestore().collection('people').doc(person).get(); // Use 'person' parameter as the document ID
+                if (matchedUserDoc.exists) {
+                    setMatchedUser(matchedUserDoc.data());
+                } else {
+                    console.log('No matched user found.');
+                }
+            } catch (error) {
+                console.error('Error fetching matched user:', error);
+            }
+        };
+
+        fetchMatchedUser();
+    }, [person]); // Update when the 'person' parameter changes
+
+    useEffect(() => {
+        // Fetch messages from Firebase Firestore
+        const fetchMessages = async () => {
+            try {
+                const messagesSnapshot = await firebase.firestore().collection('messages')
+                    .where('senderName', 'in', ['CurrentUser', matchedUser?.name])
+                    .where('receiverName', 'in', ['CurrentUser', matchedUser?.name])
+                    .orderBy('timestamp', 'asc')
+                    .get();
+                const messagesData = messagesSnapshot.docs.map(doc => doc.data());
+                setMessages(messagesData);
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+            }
+        };
+
+        fetchMessages();
+    }, [matchedUser]);
+
+    const handleSend = async (e) => {
         e.preventDefault();
-        setMessages([...messages,{message:input}]);
-        setInput('');
-    }
-  return (
-    <div className='chatScreen'>
-        <p className='chatScreen__timestamp'>
-            YOU MATCHED WITH ELLEN ON 10/08/23
-        </p>
-        {messages.map((message)=>(
-            message.name ? (
-                <div className='chatScreen__message'>
-                <Avatar className='chatScreen__image' alt={message.name} src={message.Image}/>
-                <p className='chatScreen__text'>{message.message}</p>
+        if (input.trim() !== '') {
+            const newMessage = { senderName: 'CurrentUser', receiverName: matchedUser?.name, timestamp: new Date(), content: input };
+            setMessages([...messages, newMessage]);
+            setInput('');
+
+            // Add new message to Firebase Firestore
+            try {
+                await firebase.firestore().collection('messages').add(newMessage);
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
+        }
+    };
+
+    return (
+        <div className='chatScreen'>
+            <p className='chatScreen__timestamp'>YOU MATCHED WITH {matchedUser?.name} ON 10/08/23</p>
+            <div className='chatScreen__messages'>
+            {messages.map((message, index) => (
+                <div key={index} className={message.senderName === 'CurrentUser' ? 'chatScreen__messageUser' : 'chatScreen__message'}>
+                    {message.senderName !== 'CurrentUser' && (
+                        <Avatar className='chatScreen__image' alt={message.senderName} src={matchedUser?.url} />
+                    )}
+                    <p className={message.senderName === 'CurrentUser' ? 'chatScreen__text chatScreen__textRight' : 'chatScreen__text'}>
+                        {message.content}
+                    </p>
                 </div>
-            ):(
-                <div className='chatScreen__message'>
-                <p className='chatScreen__textUser'>{message.message}</p>
-                </div>
-            )
-        ))}
-        <form className='chatScreen__input'>
-            <input value={input} onChange={e => setInput(e.target.value)} className='chatScreen__inputField' type="text" placeholder='Type a message...'/>
-            <button onClick={handleSend} type='submit' className='chatScreen__inputButton'>SEND</button>
-        </form>
-    </div>
-  )
+            ))}
+
+            </div>
+            <form className='chatScreen__input' onSubmit={handleSend}>
+                <input value={input} onChange={(e) => setInput(e.target.value)} className='chatScreen__inputField' type='text' placeholder='Type a message...' />
+                <button type='submit' className='chatScreen__inputButton'>SEND</button>
+            </form>
+        </div>
+    );
 }
 
-export default ChatScreen
+export default ChatScreen;

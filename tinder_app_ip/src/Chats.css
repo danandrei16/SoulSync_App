@@ -1,0 +1,9 @@
+.chats {
+    position: relative;
+    overflow: hidden;
+}
+
+.chats img {
+    transition: transform 0.3s ease;
+    transform: scale(1.5) translateY(5%);
+}

@@ -29,8 +29,7 @@ function TinderCards() {
     }, []);
 
     const onSwipe = (direction) => {
-        if (direction === 'right') {
-            // Increment currentIndex to move to the next person
+        if (currentIndex + 1 < people.length) {
             setCurrentIndex(currentIndex + 1);
         }
     };
@@ -44,9 +43,10 @@ function TinderCards() {
     }
 
     return (
-        <div>
-            <div className='tinderCards__cardContainer'>
-                {people.slice(currentIndex, currentIndex + 1).map(person => (
+        <div className='tinderCards__cardContainer'>
+            {/* Render the current and next cards */}
+            {people.slice(currentIndex, currentIndex + 2).map((person, index) => (
+                <div key={index} style={{ position: 'absolute', width: '100%', left: 0, zIndex: index === 0 ? 2 : 1 }}>
                     <TinderCard
                         className='swipe'
                         key={person.name}
@@ -60,8 +60,8 @@ function TinderCards() {
                             <h3>{person.name}, {person.age}</h3>
                         </div>
                     </TinderCard>
-                ))}
-            </div>
+                </div>
+            ))}
         </div>
     );
 }

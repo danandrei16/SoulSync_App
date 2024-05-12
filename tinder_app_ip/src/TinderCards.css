@@ -1,29 +1,28 @@
-.card{
-    position: relative;
-    width: 600px;
-    padding: 20px;
-    max-width: 85vw;
-    height: 50vh;
+.card {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw; /* Adjust to match the container width */
+    max-width: 350px;
+    height: 400px;
     border-radius: 20px;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    -ms-border-radius: 20px;
-    -o-border-radius: 20px;
     background-size: cover;
     background-position: center;
-    box-shadow: 0px 18px 53px 0px rgba(0,0,0,0.3);
 }
-.card > h3{
+
+.card > h3 {
     position: absolute;
     bottom: 10px;
     left: 10px;
     color: white;
 }
-.tinderCards__cardContainer{
+
+.tinderCards__cardContainer {
+    position: relative;
+    width: 100%; /* Ensure the container spans the entire width */
+    height: 400px; /* Set a fixed height for the container */
     display: flex;
     justify-content: center;
-    margin-top: 5vh;
-}
-.swipe{
-    position: absolute;
+    margin-top: 7vh;
+    overflow: hidden; /* Hide overflow to prevent scrollbar */
 }

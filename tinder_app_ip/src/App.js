@@ -6,32 +6,17 @@ import SwipeButtons from "./SwipeButtons";
 import Chats from "./Chats";
 import ChatScreen from "./ChatScreen";
 
-// Define a layout component that includes the Header
-const Layout = ({ children }) => (
-  <div className="App">
-    <Header /> 
-    <TinderCards />
-    {children}
-  </div>
-);
-
 function App() {
-  // Define a message to display
-  const message = "Welcome to the Tinder app!";
-  
   return (
     <Router>
-      <div>
-        {/* Display the message */}
-        <div className="message">{message}</div>
+      <div className="App">
+        <Header />
+        {/* Define your routes */}
         <Routes>
-          <Route element={<Layout />}>
-            {/* Define your routes */}
-            <Route path="/chat/:person" element={<ChatScreen />} />
-            <Route path="/chat" element={<Chats />} />
-            <Route path="/" element={<TinderCards />} />
-            <Route path="/swipe-buttons" element={<SwipeButtons />} />
-          </Route>
+          <Route path="/chat/:person" element={<ChatScreen />} />
+          <Route path="/chat" element={<Chats />} />
+          <Route path="/" element={<TinderCards />} />
+          <Route path="/swipe-buttons" element={<SwipeButtons />} />
         </Routes>
       </div>
     </Router>

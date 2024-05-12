@@ -1,9 +1,11 @@
-.chatScreen__message{
+.chatScreen__message {
     display: flex;
     align-items: center;
     padding: 20px;
+    justify-content: flex-end; /* Align messages to the right */
 }
-.chatScreen__text{
+
+.chatScreen__text {
     margin-left: 10px;
     background-color: lightgray;
     padding: 15px;
@@ -13,13 +15,15 @@
     -ms-border-radius: 20px;
     -o-border-radius: 20px;
 }
-.chatScreen__timestamp{
+
+.chatScreen__timestamp {
     text-align: center;
     padding: 20px;
     color: gray;
 }
-.chatScreen__textUser{
-    margin-left: auto;
+
+.chatScreen__textUser {
+    
     background-color: #29b3cd;
     padding: 15px;
     border-radius: 20px;
@@ -29,25 +33,66 @@
     -o-border-radius: 20px;
     color: aliceblue;
 }
-.chatScreen__input{
+
+.chatScreen__input {
     display: flex;
     padding: 5px;
     position: fixed;
-    bottom:0;
+    bottom: 0;
     width: 100%;
     border-top: 1px solid lightgray;
 }
-.chatScreen__inputField{
+
+.chatScreen__inputField {
     flex: 1;
     border-radius: 30px;
     padding: 10px;
     border: none;
     outline: none;
 }
-.chatScreen__inputButton{
+
+.chatScreen__inputButton {
     border: none;
     margin-right: 20px;
-    background-color:white;
+    background-color: white;
     font-weight: bold;
     color: #fe3d71;
+    border-radius: 30px;
+    padding: 10px;
+    cursor: pointer;
+    outline: none; /* Remove default outline */
+    transition: box-shadow 0.3s ease; /* Add transition for smoother effect */
+    position: relative; /* Set position to relative to contain the pseudo-element */
+}
+
+.chatScreen__inputButton:hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 30px;
+    background-color: rgba(254, 61, 113, 0.1); /* Adjust background color with opacity */
+}
+
+
+
+.chatScreen__textRight {
+    background-color: lightblue; /* Change background color as desired */
+    color: black; /* Change text color as desired */
+    display: inline-block; /* Set display to inline-block */
+    border-radius: 20px; /* Optionally add border radius */
+    justify-content: flex-end;
+    padding: 20px;
+    
+}
+
+.chatScreen img {
+    height: 50px;
+    border-radius: 50%;
+    margin-left: 20px;
+    margin-right: 20px;
+    transition: transform 0.3s ease;
+    transform: scale(1.3) translateY(5%);
 }

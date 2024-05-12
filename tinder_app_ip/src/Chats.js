@@ -1,36 +1,45 @@
-import React from 'react'
-import './Chats.css'
-import Chat from './Chat'
+import React, { useState, useEffect } from 'react';
+import './Chats.css';
+import Chat from './Chat';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 
 function Chats() {
+  const [people, setPeople] = useState([]);
+
+  useEffect(() => {
+    // Fetch people data from Firebase Firestore
+    const fetchPeople = async () => {
+      try {
+        const data = await firebase.firestore().collection('people').get();
+        const peopleData = data.docs.map(doc => ({
+          id: doc.id,
+          name: doc.data().name,
+          url: doc.data().url,
+          age: doc.data().age
+        }));
+        setPeople(peopleData);
+      } catch (error) {
+        console.error('Error fetching people:', error);
+      }
+    };
+
+    fetchPeople();
+  }, []); // Run once on component mount
+
   return (
     <div className='chats'>
+      {people.map(person => (
         <Chat
-            name='Lisa'
-            message='Yo whats up!'
-            timestamp='40 seconds ago'
-            profilePic='https://staticg.sportskeeda.com/editor/2021/10/8cd36-16334407189532-800.jpg'
+          key={person.id} // Use the document ID as the key
+          id={person.id} // Pass the document ID as a prop
+          name={person.name}
+          profilePic={person.url}
+          age={person.age}
         />
-        <Chat
-            name="Ellen"
-            message="Whats up❤️?"
-            timestamp="55 minutes ago"
-            profilePic="https://imageio.forbes.com/specials-images/imageserve/5ed560d07fe4060006bbce1e/0x0.jpg?format=jpg&crop=878,879,x422,y0,safe&height=416&width=416&fit=bounds"
-        />
-        <Chat
-            name="Sandra"
-            message="Ola!"
-            timestamp="3 days ago"
-            profilePic="https://hips.hearstapps.com/hmg-prod/images/sandra-dee-gettyimages-154051093.jpg?crop=1xw:1.0xh;center,top&resize=640:*"
-        />
-        <Chat
-            name="Natasha"
-            message="Oops there is he is...🐶"
-            timestamp="1 week ago"
-            profilePic="https://m.media-amazon.com/images/M/MV5BMzc5ZjkxYjEtODUyYS00YTA2LTk4MTItOGQyYThlMWM4ZDQ1XkEyXkFqcGdeQXVyMTE5NjI0MzYz._V1_.jpg"
-        />
+      ))}
     </div>
-  )
+  );
 }
 
-export default Chats
+export default Chats;
