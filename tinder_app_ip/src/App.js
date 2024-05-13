@@ -6,6 +6,7 @@ import SwipeButtons from "./SwipeButtons";
 import Chats from "./Chats";
 import ChatScreen from "./ChatScreen";
 import UserProfile from "./UserProfile";
+import ProfileSettings from "./ProfileSettings";
 import Login from "./components/auth/login";
 import Register from "./components/auth/register";
 import Home from "./components/home";
@@ -21,7 +22,8 @@ function App() {
           <Routes>
             <Route path="/chat/:person" element={<ChatScreen />} />
             <Route path="/chat" element={<Chats />} />
-            <Route path="/profile" element={<UserProfile />} /> {/* Route for UserProfile */}
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/profile_settings" element={<ProfileSettings />} /> {/* Route for UserProfile */}
             <Route path="/" element={<TinderCards />} />
             <Route path="/swipe-buttons" element={<SwipeButtons />} />
             <Route path="/login" element={<Login />} />

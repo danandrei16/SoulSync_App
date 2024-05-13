@@ -1,0 +1,119 @@
+/* Body and HTML for full height and centering */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f2f5;
+}
+
+/* Main card container */
+.main {
+    background: white;
+    padding: 20px;
+    width: 340px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Styling for the title */
+h3 {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+}
+
+/* Form styling */
+form {
+    width: 100%;
+}
+
+.input-group {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+/* Button styling */
+button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: none;
+    background-color: #fe3c72;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #fc2c60;
+}
+
+/* Link and divider styling */
+.link,
+.divider {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.divider {
+    position: relative;
+    line-height: 0.1em;
+    margin: 20px 0 20px;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    background: #ccc;
+    display: inline-block;
+    width: 40%;
+    height: 1px;
+    vertical-align: middle;
+    position: absolute;
+}
+
+.divider::before {
+    left: 10px;
+}
+
+.divider::after {
+    right: 10px;
+}
+
+/* Google button */
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.google-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+

@@ -1,0 +1,54 @@
+.ProfileSettings {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .ProfileSettings h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .ProfileSettings form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .ProfileSettings label {
+    margin-bottom: 10px;
+  }
+  
+  .ProfileSettings input,
+  .ProfileSettings select,
+  .ProfileSettings textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .ProfileSettings textarea {
+    height: 80px;
+  }
+  
+  .ProfileSettings button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .ProfileSettings button:hover {
+    background-color: #0056b3;
+  }
+  
