@@ -8,6 +8,7 @@ function TinderCards() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showDetails, setShowDetails] = useState(false); // State to control showing user details
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,7 +32,16 @@ function TinderCards() {
     const onSwipe = (direction) => {
         if (currentIndex + 1 < people.length) {
             setCurrentIndex(currentIndex + 1);
+            setShowDetails(false); // Reset details view when swiping
         }
+    };
+
+    const toggleDetails = () => {
+        setShowDetails(!showDetails);
+    };
+
+    const undoDetails = () => {
+        setShowDetails(false);
     };
 
     if (loading) {
@@ -54,10 +64,38 @@ function TinderCards() {
                         preventSwipe={['up','down']}
                     >
                         <div
-                            style={{backgroundImage: `url(${person.url})`}}
-                            className='card'
+                            className='cardContainer'
                         >
-                            <h3>{person.name}, {person.age}</h3>
+                            <div
+                                style={{backgroundImage: `url(${person.url})`}}
+                                className='card'
+                            >
+                                <h3>{person.name}, {person.age}</h3>
+                                {showDetails && (
+                                    <div className="details">
+                                        <p>Description: Vreau sa ma fut</p>
+                                        <p>Preferences: orice, pula sa fie</p>
+                                        {/* Add more details as needed */}
+                                    </div>
+                                )}
+                            </div>
+                            {showDetails ? (
+                                <button className="undoButton" onClick={undoDetails}>
+                                    {/* Upper arrow icon */}
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                        <circle cx="12" cy="12" r="10" fill="white" />
+                                        <path d="M12 15l-6-6h12z" fill="black"/>
+                                    </svg>
+                                </button>
+                            ) : (
+                                <button className="showDetailsButton" onClick={toggleDetails}>
+                                    {/* Down arrow icon inside a circle */}
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                        <circle cx="12" cy="12" r="10" fill="white" />
+                                        <path d="M12 9l-6 6h12z" fill="black"/>
+                                    </svg>
+                                </button>
+                            )}
                         </div>
                     </TinderCard>
                 </div>

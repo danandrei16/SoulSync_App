@@ -8,6 +8,8 @@
     border-radius: 20px;
     background-size: cover;
     background-position: center;
+    overflow: hidden; /* Ensure button is not visible outside the card */
+    position: relative; /* Ensure button is positioned relative to the card */
 }
 
 .card > h3 {
@@ -26,3 +28,69 @@
     margin-top: 7vh;
     overflow: hidden; /* Hide overflow to prevent scrollbar */
 }
+
+.showDetailsButton,
+.undoButton {
+    position: absolute;
+    bottom: 10px; /* Adjust to desired position */
+    left: 50%;
+    transform: translateX(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+}
+
+.showDetailsButton svg,
+.undoButton svg {
+    width: 24px;
+    height: 24px;
+    fill: black;
+}
+
+.showDetailsButton svg circle {
+    fill: white;
+}
+
+.showDetailsButton:hover svg circle {
+    fill: lightgrey;
+}
+
+.undoButton:hover svg path {
+    fill: black;
+}
+
+.showDetailsButton:hover svg path {
+    fill: black;
+}
+
+.undoButton:hover svg circle {
+    fill: lightgrey;
+}
+
+.cardContainer {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    border-radius: 200px;
+    overflow: hidden;
+    margin-bottom: 20px; /* Adjust as needed */
+}
+
+.cardContainer .details {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    display: none; /* Initially hide the details */
+    text-align: center; /* Center align the details */
+    display: block;
+    width: 100vw; /* Adjust to match the container width */
+    max-width: 350px;
+    height: 400px;
+}
+
+
