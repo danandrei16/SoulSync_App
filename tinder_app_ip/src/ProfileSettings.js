@@ -1,134 +1,222 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import "./ProfileSettings.css";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import { auth } from "./firebase";
 
 function ProfileSettings() {
-  const [name, setName] = useState(""); // State for name
-  const [age, setAge] = useState(""); // State for age
+  const [name, setName] = useState("");
+  const [age, setAge] = useState("");
+  const [description, setDescription] = useState("");
+  const [gender, setGender] = useState("");
+  const [preference, setPreference] = useState("");
+  const [location, setLocation] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [starSign, setStarSign] = useState("");
+  const [lookingFor, setLookingFor] = useState("");
+  const [savedMessage, setSavedMessage] = useState(""); // State to handle the "Successfully saved" message
   const [profilePicture, setProfilePicture] = useState(null); // State for profile picture
-  const [description, setDescription] = useState(""); // State for description
-  const [gender, setGender] = useState(""); // State for gender
-  const [preference, setPreference] = useState(""); // State for preference
-  const [location, setLocation] = useState(""); // State for location
-  const [height, setHeight] = useState(""); // State for height
-  const [weight, setWeight] = useState(""); // State for weight
-  const [starSign, setStarSign] = useState(""); // State for star sign
-  const [lookingFor, setLookingFor] = useState(""); // State for looking for
 
-  // Function to handle profile picture upload
-  const handleProfilePictureChange = (event) => {
+// Function to handle profile picture upload
+const handleProfilePictureChange = (event) => {
     const file = event.target.files[0];
     setProfilePicture(file);
+    };
+
+  useEffect(() => {
+    // Fetch user profile data from Firestore when component mounts
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      if (!auth.currentUser) {
+        console.error("User is not logged in.");
+        return;
+      }
+
+      // Fetch the document from Firestore based on the user's email
+      const userDocument = await firebase
+        .firestore()
+        .collection("people")
+        .where("email", "==", auth.currentUser.email)
+        .get();
+
+      if (!userDocument.empty) {
+        const userData = userDocument.docs[0].data();
+        // Set the state with user profile data
+        setName(userData.name || "");
+        setAge(userData.age || "");
+        setDescription(userData.description || "");
+        setGender(userData.gender || "");
+        setPreference(userData.preference || "");
+        setLocation(userData.location || "");
+        setHeight(userData.height || "");
+        setWeight(userData.weight || "");
+        setStarSign(userData.starSign || "");
+        setLookingFor(userData.lookingFor || "");
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
   };
 
-  // Function to handle form submission
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Here you can implement logic to update user information in the backend
-    console.log("Submitted:", {
-      name,
-      age,
-      profilePicture,
-      description,
-      gender,
-      preference,
-      location,
-      height,
-      weight,
-      starSign,
-      lookingFor,
-    });
+    try {
+      if (!auth.currentUser) {
+        console.error("User is not logged in.");
+        return;
+      }
+  
+      // Fetch the document from Firestore based on the user's email
+      const userDocument = await firebase
+        .firestore()
+        .collection("people")
+        .where("email", "==", auth.currentUser.email)
+        .get();
+  
+      // Check if the document exists
+      if (userDocument.empty) {
+        console.error("User document not found.");
+        return;
+      }
+  
+      // Update the existing document with new fields
+      const documentId = userDocument.docs[0].id;
+      await firebase.firestore().collection("people").doc(documentId).update({
+        name,
+        age,
+        description,
+        gender,
+        preference,
+        location,
+        height,
+        weight,
+        starSign,
+        lookingFor,
+      });
+  
+      console.log("Profile information updated successfully!");
+  
+      // Clear the input fields
+      setName("");
+      setAge("");
+      setDescription("");
+      setGender("");
+      setPreference("");
+      setLocation("");
+      setHeight("");
+      setWeight("");
+      setStarSign("");
+      setLookingFor("");
+      setSavedMessage("Profile information saved successfully!"); // Set the saved message
+    } catch (error) {
+      console.error("Error updating profile information:", error);
+    }
   };
+  
 
   return (
     <div>
       <h1>User Profile</h1>
       <form onSubmit={handleSubmit}>
-        <label>
+        <label className="input-label">
           Name:
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          <input type="text" onChange={(e) => setName(e.target.value)} />
         </label>
-        <br />
-        <label>
+        
+        <label className="input-label">
           Age:
-          <input type="number" value={age} onChange={(e) => setAge(e.target.value)} />
+          <input type="number" onChange={(e) => setAge(e.target.value)} />
         </label>
-        <br />
-        <label>
-          Profile Picture:
-          <input type="file" accept="image/*" onChange={handleProfilePictureChange} />
+        
+        <label className="input-label profile-picture-label">
+            <span>Profile Picture:</span>
+            <input 
+                type="file" 
+                accept="image/*" 
+                onChange={handleProfilePictureChange} 
+                className="profile-picture-input" 
+            />
+            {profilePicture && (
+                <img src={URL.createObjectURL(profilePicture)} alt="Profile" className="profile-picture-preview" />
+            )}
         </label>
-        <br />
-        <label>
+        <label className="input-label">
           Description:
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
+          <textarea onChange={(e) => setDescription(e.target.value)} />
         </label>
-        <br />
-        <label>
+        
+        <label className="input-label">
           Gender:
-          <select value={gender} onChange={(e) => setGender(e.target.value)}>
+          <select onChange={(e) => setGender(e.target.value)} className="selet-field2">
             <option value="">Select</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="other">Other</option>
           </select>
         </label>
-        <br />
-        <label>
+        
+        <label className="input-label">
           Preference:
-          <select value={preference} onChange={(e) => setPreference(e.target.value)}>
+          <select onChange={(e) => setPreference(e.target.value)} className="selet-field2">
             <option value="">Select</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="any">Any</option>
           </select>
         </label>
-        <br />
-        <label>
+        
+        <label className="input-label">
           Location:
-          <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} />
+          <input type="text" onChange={(e) => setLocation(e.target.value)} />
         </label>
-        <br />
-        <label>
+        
+        <label className="input-label">
           Height:
-          <input type="text" value={height} onChange={(e) => setHeight(e.target.value)} />
+          <input type="text" onChange={(e) => setHeight(e.target.value)} />
         </label>
-        <br />
-        <label>
+        
+        <label className="input-label">
           Weight:
-          <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} />
+          <input type="text" onChange={(e) => setWeight(e.target.value)} />
         </label>
-        <br />
-        <label>
-          Star Sign:
-          <select value={starSign} onChange={(e) => setStarSign(e.target.value)}>
-            <option value="">Select</option>
-            <option value="Aries">Aries</option>
-            <option value="Taurus">Taurus</option>
-            <option value="Gemini">Gemini</option>
-            <option value="Cancer">Cancer</option>
-            <option value="Leo">Leo</option>
-            <option value="Virgo">Virgo</option>
-            <option value="Libra">Libra</option>
-            <option value="Scorpio">Scorpio</option>
-            <option value="Sagittarius">Sagittarius</option>
-            <option value="Capricorn">Capricorn</option>
-            <option value="Aquarius">Aquarius</option>
-            <option value="Pisces">Pisces</option>
-          </select>
+        
+        <label className="input-label">Star Sign:
+            <select onChange={(e) => setStarSign(e.target.value)} className="select-field">
+                <option value="">Select</option>
+                <option value="Aries">Aries</option>
+                <option value="Taurus">Taurus</option>
+                <option value="Gemini">Gemini</option>
+                <option value="Cancer">Cancer</option>
+                <option value="Leo">Leo</option>
+                <option value="Virgo">Virgo</option>
+                <option value="Libra">Libra</option>
+                <option value="Scorpio">Scorpio</option>
+                <option value="Sagittarius">Sagittarius</option>
+                <option value="Capricorn">Capricorn</option>
+                <option value="Aquarius">Aquarius</option>
+                <option value="Pisces">Pisces</option>
+            </select>
         </label>
-        <br />
-        <label>
+        
+        <label className="input-label">
           Looking For:
-          <select value={lookingFor} onChange={(e) => setLookingFor(e.target.value)}>
+          <select onChange={(e) => setLookingFor(e.target.value)} className="select-field">
             <option value="">Select</option>
             <option value="long-term">Long Term Relationship</option>
             <option value="casual">Something Casual</option>
             <option value="friends">Friends</option>
           </select>
         </label>
-        <br />
+        
         <button type="submit">Save</button>
+        {savedMessage && <p>{savedMessage}</p>} {/* Render the saved message if it exists */}
       </form>
+      <Link to="/profile">Go back to profile</Link> {/* Link to the profile page */}
     </div>
   );
 }

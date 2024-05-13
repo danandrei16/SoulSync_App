@@ -85,3 +85,8 @@ export const doSendEmailVerification = () => {
     url: `${window.location.origin}/home`,
   });
 };
+
+
+export const getUserEmail = () => {
+    return auth.currentUser ? auth.currentUser.email : null;
+  };

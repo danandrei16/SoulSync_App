@@ -1,50 +1,62 @@
 /* Main layout */
-.login-main {
+.register-main {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     background-color: #f0f2f5;
+    padding: 20px;
 }
 
 /* Card styling for the form */
-.login-card {
+.register-card {
     background: white;
-    padding: 20px;
-    width: 340px;
+    padding: 40px;
+    width: 100%;
+    max-width: 360px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: -50px; /* Slightly higher position */
 }
 
-.login-logo {
-    width: 60px;  /* Logo size */
+/* Logo at the top of the form */
+.register-logo {
+    width: 80px;
+    height: auto;
     margin-bottom: 20px;
 }
 
-.login-card h3 {
-    margin: 0;
+/* Form title */
+.register-title {
+    font-size: 1.5rem;
     color: #333;
-    font-size: 24px;
     margin-bottom: 20px;
 }
 
-.login-form {
+/* Input group styling */
+.input-group {
     width: 100%;
+    margin-bottom: 15px;
 }
 
-.login-form input {
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.input-group input {
     width: 100%;
     padding: 10px;
-    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-.login-btn {
+/* Button styling */
+.register-btn {
     width: 100%;
     padding: 12px;
     background-color: #fe3c72;
@@ -52,29 +64,30 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 1rem;
     margin-top: 10px;
 }
 
-.login-btn:hover {
+.register-btn:hover {
     background-color: #e63950;
 }
 
-.error {
-    color: #d93025;
-    text-align: center;
-    margin-bottom: 10px;
+.register-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
-.sign-up-text {
-    text-align: center;
-    margin-top: 15px;
+/* Link to login page */
+.register-link {
+    margin-top: 20px;
+    font-size: 0.875rem;
 }
 
-.sign-up-text a {
+.register-link a {
     color: #0056b3;
     text-decoration: none;
 }
 
-.sign-up-text a:hover {
+.register-link a:hover {
     text-decoration: underline;
 }
