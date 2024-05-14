@@ -5,7 +5,6 @@ import ForumIcon from '@mui/icons-material/Forum';
 import ExitToAppIcon from '@mui/icons-material/Logout';
 import { IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { auth } from './firebase'; // Import the auth instance from your firebase.js file
 import { set } from 'firebase/database';
 
@@ -25,18 +24,6 @@ function Header({ backButton }) {
         return () => unsubscribe();
     }, []);
     
-
-    // Function to handle logout
-    const handleLogout = async () => {
-        try {
-            await auth.signOut(); // Sign out the current user
-            // Redirect to the login page after logout
-            navigate('/');
-        } catch (error) {
-            console.error('Error logging out:', error);
-        }
-    };
-
     return (
         <div className='header'>
             
@@ -60,11 +47,6 @@ function Header({ backButton }) {
                 </IconButton>
             </Link>
             
-            <Link to='/'>
-                <IconButton onClick={handleLogout}>
-                    <ExitToAppIcon fontSize='large' className='header__icon' />
-                </IconButton>
-            </Link>
         </div>
     );
 }

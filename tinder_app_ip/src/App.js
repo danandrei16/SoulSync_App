@@ -11,27 +11,48 @@ import Login from "./components/auth/login";
 import Register from "./components/auth/register";
 import Home from "./components/home";
 import { AuthProvider } from "./contexts/authContext";
+import { auth } from "./firebase";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+      // Listen for authentication state changes
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+          if (user) {
+              // User is signed in
+              setUser(user);
+          } else {
+              // User is signed out
+              setUser(null);
+          }
+      });
+
+      // Cleanup function
+      return () => unsubscribe();
+  }, []);
+
   return (
-    <Router>
-      <AuthProvider>
-        <div className="App">
-          <Header />
-          {/* Define your routes */}
-          <Routes>
-            <Route path="/chat/:person" element={<ChatScreen />} />
-            <Route path="/chat" element={<Chats />} />
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/profile_settings" element={<ProfileSettings />} /> {/* Route for UserProfile */}
-            <Route path="/home" element={<TinderCards />} />
-            <Route path="/swipe-buttons" element={<SwipeButtons />} />
-            <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Routes>
-        </div>
-      </AuthProvider>
-    </Router>
+      <Router>
+          <AuthProvider>
+              <div className="App">
+                  {/* Render Header only if user is logged in */}
+                  {user && <Header />}
+                  <Routes>
+                      <Route path="/chat/:person" element={<ChatScreen />} />
+                      <Route path="/chat" element={<Chats />} />
+                      <Route path="/profile" element={<UserProfile />} />
+                      <Route path="/profile_settings" element={<ProfileSettings />} /> {/* Route for UserProfile */}
+                      <Route path="/home" element={<TinderCards />} />
+                      <Route path="/swipe-buttons" element={<SwipeButtons />} />
+                      {/* Render Home component if user is logged in, otherwise render Login component */}
+                      <Route path="/" element={user ? <TinderCards /> : <Login />} />
+                      <Route path="/register" element={<Register />} />
+                  </Routes>
+              </div>
+          </AuthProvider>
+      </Router>
   );
 }
 
