@@ -140,7 +140,7 @@ function ProfileSettings() {
 
   return (
     <div>
-      <h1>User Profile</h1>
+      <h1>User Profile Details</h1>
       <form onSubmit={handleSubmit}>
         <label className="input-label">
           Name:
