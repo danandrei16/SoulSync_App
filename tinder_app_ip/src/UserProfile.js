@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link, useNavigate } from 'react-router-dom';
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { auth } from "./firebase";
+import { IconButton } from '@mui/material';
+import ExitToAppIcon from '@mui/icons-material/Logout';
 
 import './UserProfile.css'; // Import CSS file for styling
 
-function UserProfile() {
+function UserProfile( {backButton} ) {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [description, setDescription] = useState("");
@@ -21,6 +23,33 @@ function UserProfile() {
   useEffect(() => {
     fetchUserProfile();
   }, []);
+
+  const navigate = useNavigate();
+  const [userEmail, setUserEmail] = useState('');
+
+  useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+          if (user) {
+              setUserEmail(user.email);
+          } else {
+              setUserEmail('');
+          }
+      });
+  
+      return () => unsubscribe();
+  }, []);
+  
+
+  // Function to handle logout
+  const handleLogout = async () => {
+      try {
+          await auth.signOut(); // Sign out the current user
+          // Redirect to the login page after logout
+          navigate('/');
+      } catch (error) {
+          console.error('Error logging out:', error);
+      }
+  };
 
   const fetchUserProfile = async () => {
     try {
@@ -101,6 +130,12 @@ function UserProfile() {
         {/* Add a button to navigate to profile settings */}
         <Link to="/profile_settings">
           <button className="settings-button">Edit Profile</button>
+        </Link>
+
+        <Link to='/'>
+            <IconButton onClick={handleLogout}>
+                <ExitToAppIcon fontSize='large' className='header__icon' />
+            </IconButton>
         </Link>
       </div>
     </div>
