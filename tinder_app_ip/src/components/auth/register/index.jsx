@@ -55,7 +55,7 @@ const Register = () => {
                         <button type="submit" disabled={isRegistering} className="register-btn">
                             {isRegistering ? 'Signing Up...' : 'Sign Up'}
                         </button>
-                        <div className="register-link">Already have an account? <Link to="/login">Log in</Link></div>
+                        <div className="register-link">Already have an account? <Link to="/">Log in</Link></div>
                     </form>
                 </div>
             </main>

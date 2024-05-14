@@ -15,7 +15,7 @@ function Chats() {
         const peopleData = data.docs.map(doc => ({
           id: doc.id,
           name: doc.data().name,
-          url: doc.data().url,
+          url: doc.data().picture,
           age: doc.data().age
         }));
         setPeople(peopleData);

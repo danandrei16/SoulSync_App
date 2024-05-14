@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Header from "./Header";
 import TinderCards from "./TinderCards";
 import SwipeButtons from "./SwipeButtons";
@@ -24,11 +24,10 @@ function App() {
             <Route path="/chat" element={<Chats />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/profile_settings" element={<ProfileSettings />} /> {/* Route for UserProfile */}
-            <Route path="/" element={<TinderCards />} />
+            <Route path="/home" element={<TinderCards />} />
             <Route path="/swipe-buttons" element={<SwipeButtons />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/home" element={<Home />} />
           </Routes>
         </div>
       </AuthProvider>

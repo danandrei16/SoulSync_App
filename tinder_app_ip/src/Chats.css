@@ -11,7 +11,7 @@
 
 .chat-card img {
     transition: transform 0.3s ease;
-    transform: scale(1.5) translateY(5%);
+    transform: scale(2.0) translateY(5%);
 }
 
 .chat-card:hover img {

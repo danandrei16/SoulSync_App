@@ -54,6 +54,7 @@ function TinderCards() {
 
     return (
         <div className='tinderCards__cardContainer'>
+            
             {/* Render the current and next cards */}
             {people.slice(currentIndex, currentIndex + 2).map((person, index) => (
                 <div key={index} style={{ position: 'absolute', width: '100%', left: 0, zIndex: index === 0 ? 2 : 1 }}>
@@ -67,14 +68,13 @@ function TinderCards() {
                             className='cardContainer'
                         >
                             <div
-                                style={{backgroundImage: `url(${person.url})`}}
+                                style={{backgroundImage: `url(${person.picture})`}}
                                 className='card'
                             >
                                 <h3>{person.name}, {person.age}</h3>
                                 {showDetails && (
                                     <div className="details">
-                                        <p>Description: Vreau sa ma fut</p>
-                                        <p>Preferences: orice, pula sa fie</p>
+                                        <p>{person.description}</p>
                                         {/* Add more details as needed */}
                                     </div>
                                 )}

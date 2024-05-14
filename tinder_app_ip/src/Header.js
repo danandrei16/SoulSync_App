@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Header.css';
 import PersonIcon from '@mui/icons-material/Person';
 import ForumIcon from '@mui/icons-material/Forum';
@@ -7,28 +7,43 @@ import { IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { auth } from './firebase'; // Import the auth instance from your firebase.js file
+import { set } from 'firebase/database';
 
 function Header({ backButton }) {
-    const history = useNavigate();
+    const navigate = useNavigate();
+    const [userEmail, setUserEmail] = useState('');
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                setUserEmail(user.email);
+            } else {
+                setUserEmail('');
+            }
+        });
+    
+        return () => unsubscribe();
+    }, []);
+    
 
     // Function to handle logout
     const handleLogout = async () => {
         try {
             await auth.signOut(); // Sign out the current user
-            // Redirect to the login page or any other page after logout
-            history.replace('/login');
+            // Redirect to the login page after logout
+            navigate('/');
         } catch (error) {
             console.error('Error logging out:', error);
         }
     };
 
     return (
-        // BEM
         <div className='header'>
             
             <Link to='/profile'>
                 <IconButton>
                     <PersonIcon fontSize='large' className='header__icon' />
+                    <p>{userEmail}</p> {/* Display the user's email here */}
                 </IconButton>
             </Link>
             
@@ -44,10 +59,12 @@ function Header({ backButton }) {
                     <ForumIcon fontSize='large' className='header__icon' />
                 </IconButton>
             </Link>
-            {/* Logout button */}
-            <IconButton onClick={handleLogout}>
-                <ExitToAppIcon fontSize='large' className='header__icon' />
-            </IconButton>
+            
+            <Link to='/'>
+                <IconButton onClick={handleLogout}>
+                    <ExitToAppIcon fontSize='large' className='header__icon' />
+                </IconButton>
+            </Link>
         </div>
     );
 }
