@@ -16,7 +16,6 @@ function UserProfile( {backButton} ) {
   const [preference, setPreference] = useState("");
   const [location, setLocation] = useState("");
   const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
   const [starSign, setStarSign] = useState("");
   const [lookingFor, setLookingFor] = useState("");
 
@@ -73,7 +72,6 @@ function UserProfile( {backButton} ) {
         setPreference(userData.preference || "");
         setLocation(userData.location || "");
         setHeight(userData.height || "");
-        setWeight(userData.weight || "");
         setStarSign(userData.starSign || "");
         setLookingFor(userData.lookingFor || "");
       }
@@ -114,10 +112,6 @@ function UserProfile( {backButton} ) {
         <div>
           <label>Height:</label>
           <div>{height}</div>
-        </div>
-        <div>
-          <label>Weight:</label>
-          <div>{weight}</div>
         </div>
         <div>
           <label>Star Sign:</label>

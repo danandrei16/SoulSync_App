@@ -4,23 +4,35 @@ import { Avatar } from '@mui/material';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { useParams } from 'react-router-dom';
+import { auth } from './firebase'; // Import the auth instance from your firebase.js file
 
 function ChatScreen() {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]);
     const [matchedUser, setMatchedUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
     const { person } = useParams(); // Extract the 'person' parameter from the URL
 
     useEffect(() => {
         // Fetch matched user's data from Firebase Firestore
         const fetchMatchedUser = async () => {
             try {
+                //console.log("AAAA " + auth.currentUser.email + " " + auth.currentUser.uid + " " + person)
+
                 const matchedUserDoc = await firebase.firestore().collection('people').doc(person).get(); // Use 'person' parameter as the document ID
+                const currentUserDoc = await firebase.firestore().collection('people').doc(auth.currentUser.uid).get(); // Use 'person' parameter as the document ID
+                //console.log("BBB " + matchedUserDoc.data() + " " + currentUserDoc.data());
                 if (matchedUserDoc.exists) {
                     setMatchedUser(matchedUserDoc.data());
                 } else {
                     console.log('No matched user found.');
                 }
+                if (currentUserDoc.exists) {
+                    setCurrentUser(currentUserDoc.data());
+                } else {
+                    console.log('No current user found.');
+                }
+
             } catch (error) {
                 console.error('Error fetching matched user:', error);
             }
@@ -34,8 +46,8 @@ function ChatScreen() {
         const fetchMessages = async () => {
             try {
                 const messagesSnapshot = await firebase.firestore().collection('messages')
-                    .where('senderName', 'in', ['CurrentUser', matchedUser?.name])
-                    .where('receiverName', 'in', ['CurrentUser', matchedUser?.name])
+                    .where('senderName', 'in', [currentUser?.name, matchedUser?.name])
+                    .where('receiverName', 'in', [currentUser?.name, matchedUser?.name])
                     .orderBy('timestamp', 'asc')
                     .get();
                 const messagesData = messagesSnapshot.docs.map(doc => doc.data());
@@ -51,7 +63,7 @@ function ChatScreen() {
     const handleSend = async (e) => {
         e.preventDefault();
         if (input.trim() !== '') {
-            const newMessage = { senderName: 'CurrentUser', receiverName: matchedUser?.name, timestamp: new Date(), content: input };
+            const newMessage = { senderName: currentUser?.name, receiverName: matchedUser?.name, timestamp: new Date(), content: input };
             setMessages([...messages, newMessage]);
             setInput('');
 
@@ -69,7 +81,7 @@ function ChatScreen() {
             <p className='chatScreen__timestamp'>YOU MATCHED WITH {matchedUser?.name} ON 10/08/23</p>
             <div className='chatScreen__messages'>
             {messages.map((message, index) => (
-                <div key={index} className={message.senderName === 'CurrentUser' ? 'chatScreen__messageUser' : 'chatScreen__message'}>
+                <div key={index} className={message.senderName === currentUser?.name ? 'chatScreen__messageUser' : 'chatScreen__message'}>
                     {message.senderName !== 'CurrentUser' && (
                         <Avatar className='chatScreen__image' alt={message.senderName} src={matchedUser?.url} />
                     )}

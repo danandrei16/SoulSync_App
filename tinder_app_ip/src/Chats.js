@@ -19,6 +19,8 @@ function Chats() {
           age: doc.data().age
         }));
         setPeople(peopleData);
+        // add 'id' field to the person
+        
       } catch (error) {
         console.error('Error fetching people:', error);
       }
