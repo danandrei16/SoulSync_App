@@ -5,6 +5,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage"; // Import storage module
 import { auth } from "./firebase";
+import { AirportShuttle } from "@mui/icons-material";
 
 function ProfileSettings() {
   const [name, setName] = useState("");
@@ -14,7 +15,6 @@ function ProfileSettings() {
   const [preference, setPreference] = useState("");
   const [location, setLocation] = useState("");
   const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
   const [starSign, setStarSign] = useState("");
   const [lookingFor, setLookingFor] = useState("");
   const [savedMessage, setSavedMessage] = useState("");
@@ -53,10 +53,8 @@ function ProfileSettings() {
         setPreference(userData.preference || "");
         setLocation(userData.location || "");
         setHeight(userData.height || "");
-        setWeight(userData.weight || "");
         setStarSign(userData.starSign || "");
         setLookingFor(userData.lookingFor || "");
-        setPictureUrl(userData.picture || ""); // Set picture URL
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -85,19 +83,16 @@ function ProfileSettings() {
       const documentId = userDocument.docs[0].id;
 
       // Upload profile picture to Firebase Storage if a picture is selected
-      let pictureUrl = "";
-      if (profilePicture) {
-        const storageRef = firebase.storage().ref();
-        const profilePictureRef = storageRef.child(
-          `${auth.currentUser.uid}/profilePicture/${profilePicture.name}`
-        );
-        await profilePictureRef.put(profilePicture);
-        pictureUrl = await profilePictureRef.getDownloadURL();
-        console.log("Profile picture uploaded successfully! URL:", pictureUrl);
-      }
-      else {
-        pictureUrl = "https://firebasestorage.googleapis.com/v0/b/soulsync-a49b2.appspot.com/o/default.jpg?alt=media&token=bdaedd0d-8552-4841-884e-251a13f4776d"
-      }
+      //let pictureUrl = "https://firebasestorage.googleapis.com/v0/b/soulsync-a49b2.appspot.com/o/default.jpg?alt=media&token=bdaedd0d-8552-4841-884e-251a13f4776d";
+
+      // if (profilePicture) {
+      //   const storageRef = firebase.storage().ref();
+      //   const profilePictureRef = storageRef.child(
+      //     `${auth.currentUser.uid}/profilePicture/${profilePicture.name}`
+      //   );
+      //   await profilePictureRef.put(profilePicture);
+      //   pictureUrl = await profilePictureRef.getDownloadURL();
+      // }
 
       await firebase.firestore().collection("people").doc(documentId).update({
         name,
@@ -107,10 +102,8 @@ function ProfileSettings() {
         preference,
         location,
         height,
-        weight,
         starSign,
         lookingFor,
-        picture: pictureUrl, // Store profile picture URL in 'picture' field
       });
 
       console.log("Profile information updated successfully!");
@@ -123,7 +116,6 @@ function ProfileSettings() {
       setPreference("");
       setLocation("");
       setHeight("");
-      setWeight("");
       setStarSign("");
       setLookingFor("");
       setProfilePicture(null);
@@ -138,9 +130,72 @@ function ProfileSettings() {
     }
   };
 
+  const handleSavePicture = async () => {
+    try {
+      if (!profilePicture) {
+        console.error("No picture selected.");
+        return;
+      }
+
+      const storageRef = firebase.storage().ref();
+      const profilePictureRef = storageRef.child(
+        `${auth.currentUser.uid}/profilePicture/${profilePicture.name}`
+      );
+      await profilePictureRef.put(profilePicture);
+      const url = await profilePictureRef.getDownloadURL();
+
+      const userDocument = await firebase
+        .firestore()
+        .collection("people")
+        .where("email", "==", auth.currentUser.email)
+        .get();
+
+      if (userDocument.empty) {
+        console.error("User document not found.");
+        return;
+      }
+
+      const documentId = userDocument.docs[0].id;
+
+
+
+      await firebase.firestore().collection("people").doc(documentId).update({
+        picture: url,
+      });
+
+      // Update Firestore document with the new profile picture URL
+
+      setPictureUrl(url);
+      console.log("Profile picture updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+    }
+  };
+
   return (
     <div>
-      <h1>User Profile Details</h1>
+      <h1>User Profile</h1>
+
+      <form onSubmit={(e) => e.preventDefault()}>
+        <label className="input-label profile-picture-label">
+          <span>Profile Picture:</span>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleProfilePictureChange}
+            className="profile-picture-input"
+          />
+        </label>
+        <button type="button" className="save-button" onClick={handleSavePicture}>
+          Save Picture
+        </button>
+        {pictureUrl && (
+          <img src={pictureUrl} alt="Profile" className="profile-picture-preview" />
+        )}
+      </form>
+      
+      <br/>
+
       <form onSubmit={handleSubmit}>
         <label className="input-label">
           Name:
@@ -150,23 +205,6 @@ function ProfileSettings() {
         <label className="input-label">
           Age:
           <input type="number" value={age} onChange={(e) => setAge(e.target.value)} />
-        </label>
-
-        <label className="input-label profile-picture-label">
-          <span>Profile Picture:</span>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleProfilePictureChange}
-            className="profile-picture-input"
-          />
-          {profilePicture && (
-            <img
-              src={URL.createObjectURL(profilePicture)}
-              alt="Profile"
-              className="profile-picture-preview"
-            />
-          )}
         </label>
 
         <label className="input-label">
@@ -246,7 +284,7 @@ function ProfileSettings() {
         </label>
 
         <button type="submit" className="save-button">
-          Save
+          Save Information
         </button>
         {savedMessage && <p>{savedMessage}</p>}
       </form>

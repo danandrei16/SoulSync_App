@@ -12,28 +12,30 @@ import {
 } from "firebase/auth";
 
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-  
-      // Add user data to Firestore using add method
-      const newUserRef = await firebase.firestore().collection('people').add({
-        email: user.email,
-        // Add other user data as needed
-      });
-  
-      // Retrieve the user ID from the newly created document reference
-      const userId = newUserRef.id;
-  
-      console.log('User successfully created with email/password:', user);
-      console.log('User added to Firestore with ID:', userId);
-  
-      return { ...user, id: userId }; // Return the user object with the added ID
-    } catch (error) {
-      console.error('Error creating user with email/password:', error);
-      throw error; // Rethrow the error to propagate it up to the caller
-    }
-  };
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Add user data to Firestore with the user ID as the document ID
+    await firebase.firestore().collection('people').doc(user.uid).set({
+      email: user.email,
+      picture: 'https://firebasestorage.googleapis.com/v0/b/soulsync-a49b2.appspot.com/o/default.jpg?alt=media&token=bdaedd0d-8552-4841-884e-251a13f4776d',
+      // Add other user data as needed
+      userId: user.uid // Set userId to the same value as the user ID
+    });
+
+    console.log('User successfully created with email/password:', user);
+    console.log('User added to Firestore with ID:', user.uid);
+
+    return { ...user, id: user.uid }; // Return the user object with the added ID
+  } catch (error) {
+    console.error('Error creating user with email/password:', error);
+    throw error; // Rethrow the error to propagate it up to the caller
+  }
+};
+
+
+
   
 
 export const doSignInWithEmailAndPassword = (email, password) => {
