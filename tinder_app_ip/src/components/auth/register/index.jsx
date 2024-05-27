@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/authContext';
 import { doCreateUserWithEmailAndPassword } from '../../../auth';
-import './register.css'; // Import the specific CSS file for the Register
+import './register.css';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -23,9 +23,11 @@ const Register = () => {
             setIsRegistering(true);
             try {
                 await doCreateUserWithEmailAndPassword(email, password);
+
                 navigate('/'); // Navigate after successful registration
             } catch (error) {
                 setErrorMessage(error.message);
+            } finally {
                 setIsRegistering(false);
             }
         }
@@ -36,7 +38,6 @@ const Register = () => {
             {userLoggedIn && <Navigate to="/" replace />}
             <main className="register-main">
                 <div className="register-card">
-                    <img src="https://i.ibb.co/7RfGh8N/Whats-App-Image-2024-05-11-at-19-47-30-9884f067.jpg" alt="Logo" className="register-logo"/>
                     <h3 className="register-title">Create a New Account</h3>
                     <form onSubmit={onSubmit}>
                         <div className="input-group">
@@ -64,5 +65,3 @@ const Register = () => {
 };
 
 export default Register;
-
-

@@ -29,6 +29,16 @@ export const doCreateUserWithEmailAndPassword = async (email, password) => {
     console.log('User successfully created with email/password:', user);
     console.log('User added to Firestore with ID:', user.uid);
 
+    // Send verification email to the user's email address
+    await sendEmailVerification(user, {
+      url: `${window.location.origin}/`, // URL to which the user will be redirected for email verification
+    });
+
+    console.log('Verification email sent to:', user.email);
+
+    // Sign out the user after registration
+    await auth.signOut();
+
     return { ...user, id: user.uid }; // Return the user object with the added ID
   } catch (error) {
     console.error('Error creating user with email/password:', error);
@@ -36,41 +46,43 @@ export const doCreateUserWithEmailAndPassword = async (email, password) => {
   }
 };
 
+export const doSignInWithEmailAndPassword = async (email, password) => {
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
 
+  // Check if the email is verified
+  if (!user.emailVerified) {
+    await auth.signOut();
+    throw new Error('Please verify your email address before logging in.');
+  }
 
-  
-
-export const doSignInWithEmailAndPassword = (email, password) => {
-  return signInWithEmailAndPassword(auth, email, password);
+  return user;
 };
 
 export const doSignInWithGoogle = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-  
-      // Add user data to Firestore using add method
-      const newUserRef = await firebase.firestore().collection('people').add({
-        email: user.email,
-        // Add other user data as needed
-      });
-  
-      // Retrieve the user ID from the newly created document reference
-      const userId = newUserRef.id;
-  
-      console.log('User successfully signed in with Google:', user);
-      console.log('User added to Firestore with ID:', userId);
-  
-      return { ...user, id: userId }; // Return the user object with the added ID
-    } catch (error) {
-      console.error('Error signing in with Google:', error);
-      throw error; // Rethrow the error to propagate it up to the caller
-    }
-  };
-  
-  
-  
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    // Add user data to Firestore using add method
+    const newUserRef = await firebase.firestore().collection('people').add({
+      email: user.email,
+      // Add other user data as needed
+    });
+
+    // Retrieve the user ID from the newly created document reference
+    const userId = newUserRef.id;
+
+    console.log('User successfully signed in with Google:', user);
+    console.log('User added to Firestore with ID:', userId);
+
+    return { ...user, id: userId }; // Return the user object with the added ID
+  } catch (error) {
+    console.error('Error signing in with Google:', error);
+    throw error; // Rethrow the error to propagate it up to the caller
+  }
+};
 
 export const doSignOut = () => {
   return auth.signOut();
@@ -83,13 +95,6 @@ export const doPasswordReset = (email) => {
 export const doPasswordChange = (password) => {
   return updatePassword(auth.currentUser, password);
 };
-
-export const doSendEmailVerification = () => {
-  return sendEmailVerification(auth.currentUser, {
-    url: `${window.location.origin}/home`,
-  });
-};
-
 
 export const getUserEmail = () => {
     return auth.currentUser ? auth.currentUser.email : null;
@@ -110,3 +115,4 @@ export const useAuth = () => {
 
   return { currentUser, loading };
 };
+
