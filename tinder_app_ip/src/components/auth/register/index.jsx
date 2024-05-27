@@ -23,7 +23,8 @@ const Register = () => {
             setIsRegistering(true);
             try {
                 await doCreateUserWithEmailAndPassword(email, password);
-                setErrorMessage('Please verify your email address before logging in.');
+
+                navigate('/'); // Navigate after successful registration
             } catch (error) {
                 setErrorMessage(error.message);
             } finally {

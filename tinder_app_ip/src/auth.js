@@ -11,6 +11,8 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 
+import { useState, useEffect } from 'react';
+
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -95,5 +97,22 @@ export const doPasswordChange = (password) => {
 };
 
 export const getUserEmail = () => {
-  return auth.currentUser ? auth.currentUser.email : null;
+    return auth.currentUser ? auth.currentUser.email : null;
+  };
+
+export const useAuth = () => {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged(user => {
+          setCurrentUser(user);
+          setLoading(false);
+      });
+
+      return unsubscribe;
+  }, []);
+
+  return { currentUser, loading };
 };
+

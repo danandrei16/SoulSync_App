@@ -17,11 +17,8 @@ function ChatScreen() {
         // Fetch matched user's data from Firebase Firestore
         const fetchMatchedUser = async () => {
             try {
-                //console.log("AAAA " + auth.currentUser.email + " " + auth.currentUser.uid + " " + person)
-
                 const matchedUserDoc = await firebase.firestore().collection('people').doc(person).get(); // Use 'person' parameter as the document ID
                 const currentUserDoc = await firebase.firestore().collection('people').doc(auth.currentUser.uid).get(); // Use 'person' parameter as the document ID
-                //console.log("BBB " + matchedUserDoc.data() + " " + currentUserDoc.data());
                 if (matchedUserDoc.exists) {
                     setMatchedUser(matchedUserDoc.data());
                 } else {
@@ -32,7 +29,6 @@ function ChatScreen() {
                 } else {
                     console.log('No current user found.');
                 }
-
             } catch (error) {
                 console.error('Error fetching matched user:', error);
             }
@@ -80,17 +76,16 @@ function ChatScreen() {
         <div className='chatScreen'>
             <p className='chatScreen__timestamp'>YOU MATCHED WITH {matchedUser?.name} ON 10/08/23</p>
             <div className='chatScreen__messages'>
-            {messages.map((message, index) => (
-                <div key={index} className={message.senderName === currentUser?.name ? 'chatScreen__messageUser' : 'chatScreen__message'}>
-                    {message.senderName !== 'CurrentUser' && (
-                        <Avatar className='chatScreen__image' alt={message.senderName} src={matchedUser?.url} />
-                    )}
-                    <p className={message.senderName === 'CurrentUser' ? 'chatScreen__text chatScreen__textRight' : 'chatScreen__text'}>
-                        {message.content}
-                    </p>
-                </div>
-            ))}
-
+                {messages.map((message, index) => (
+                    <div key={index} className={message.senderName === currentUser?.name ? 'chatScreen__messageUser' : 'chatScreen__message'}>
+                        {message.senderName !== currentUser?.name && (
+                            <Avatar className='chatScreen__image' alt={message.senderName} src={matchedUser?.picture} />
+                        )}
+                        <p className={message.senderName === currentUser?.name ? 'chatScreen__text chatScreen__textRight' : 'chatScreen__text'}>
+                            {message.content}
+                        </p>
+                    </div>
+                ))}
             </div>
             <form className='chatScreen__input' onSubmit={handleSend}>
                 <input value={input} onChange={(e) => setInput(e.target.value)} className='chatScreen__inputField' type='text' placeholder='Type a message...' />
