@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import "./ProfileSettings.css";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
-import "firebase/compat/storage"; // Import storage module
+import "firebase/compat/storage";
 import { auth } from "./firebase";
-import { AirportShuttle } from "@mui/icons-material";
 
 function ProfileSettings() {
   const [name, setName] = useState("");
@@ -19,12 +18,16 @@ function ProfileSettings() {
   const [lookingFor, setLookingFor] = useState("");
   const [savedMessage, setSavedMessage] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
-  const [pictureUrl, setPictureUrl] = useState(""); // State to store picture URL
+  const [pictureUrl, setPictureUrl] = useState("");
   const navigate = useNavigate();
 
   const handleProfilePictureChange = (event) => {
     const file = event.target.files[0];
-    setProfilePicture(file);
+    if (file) {
+      setProfilePicture(file);
+      const previewUrl = URL.createObjectURL(file);
+      setPictureUrl(previewUrl);
+    }
   };
 
   useEffect(() => {
@@ -55,6 +58,7 @@ function ProfileSettings() {
         setHeight(userData.height || "");
         setStarSign(userData.starSign || "");
         setLookingFor(userData.lookingFor || "");
+        setPictureUrl(userData.picture || ""); // Set the profile picture URL if it exists
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -81,18 +85,6 @@ function ProfileSettings() {
       }
 
       const documentId = userDocument.docs[0].id;
-
-      // Upload profile picture to Firebase Storage if a picture is selected
-      //let pictureUrl = "https://firebasestorage.googleapis.com/v0/b/soulsync-a49b2.appspot.com/o/default.jpg?alt=media&token=bdaedd0d-8552-4841-884e-251a13f4776d";
-
-      // if (profilePicture) {
-      //   const storageRef = firebase.storage().ref();
-      //   const profilePictureRef = storageRef.child(
-      //     `${auth.currentUser.uid}/profilePicture/${profilePicture.name}`
-      //   );
-      //   await profilePictureRef.put(profilePicture);
-      //   pictureUrl = await profilePictureRef.getDownloadURL();
-      // }
 
       await firebase.firestore().collection("people").doc(documentId).update({
         name,
@@ -124,7 +116,7 @@ function ProfileSettings() {
       // Redirect to /profile after a delay
       setTimeout(() => {
         navigate("/profile");
-      }, 500); // 1000 milliseconds delay
+      }, 500); // 500 milliseconds delay
     } catch (error) {
       console.error("Error updating profile information:", error);
     }
@@ -157,16 +149,13 @@ function ProfileSettings() {
 
       const documentId = userDocument.docs[0].id;
 
-
-
       await firebase.firestore().collection("people").doc(documentId).update({
         picture: url,
       });
 
-      // Update Firestore document with the new profile picture URL
-
       setPictureUrl(url);
       console.log("Profile picture updated successfully!");
+
     } catch (error) {
       console.error("Error updating profile picture:", error);
     }
@@ -185,13 +174,13 @@ function ProfileSettings() {
             onChange={handleProfilePictureChange}
             className="profile-picture-input"
           />
+          {pictureUrl && (
+            <img src={pictureUrl} alt="Profile" className="profile-picture-preview" />
+          )}
         </label>
         <button type="button" className="save-button" onClick={handleSavePicture}>
           Save Picture
         </button>
-        {pictureUrl && (
-          <img src={pictureUrl} alt="Profile" className="profile-picture-preview" />
-        )}
       </form>
       
       <br/>
@@ -214,7 +203,7 @@ function ProfileSettings() {
 
         <label className="input-label">
           Gender:
-          <select value={gender} onChange={(e) => setGender(e.target.value)} className="selet-field2">
+          <select value={gender} onChange={(e) => setGender(e.target.value)} className="select-field">
             <option value="">Select</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
@@ -227,7 +216,7 @@ function ProfileSettings() {
           <select
             value={preference}
             onChange={(e) => setPreference(e.target.value)}
-            className="selet-field2"
+            className="select-field"
           >
             <option value="">Select</option>
             <option value="male">Male</option>

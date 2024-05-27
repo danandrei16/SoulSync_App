@@ -104,7 +104,10 @@ function TinderCards() {
                                 {showDetails && (
                                     <div className="details">
                                         <p>{person.description}</p>
-                                        {/* Add more details as needed */}
+                                        <p>{person.location}</p>
+                                        <p>{person.height}</p>
+                                        <p>{person.starSign}</p>
+                                        <p>{person.lookingFor}</p>
                                     </div>
                                 )}
                             </div>
