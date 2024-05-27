@@ -3,43 +3,62 @@ import './Chats.css';
 import Chat from './Chat';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
+import { useAuth } from './auth'; // Import the useAuth hook from your auth.js file
 
 function Chats() {
-  const [people, setPeople] = useState([]);
+  const { currentUser } = useAuth(); // Get the current user from the auth context
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch people data from Firebase Firestore
-    const fetchPeople = async () => {
+    const fetchMatches = async () => {
       try {
-        const data = await firebase.firestore().collection('people').get();
-        const peopleData = data.docs.map(doc => ({
-          id: doc.id,
-          name: doc.data().name,
-          url: doc.data().picture,
-          age: doc.data().age
-        }));
-        setPeople(peopleData);
-        // add 'id' field to the person
+        const currentUserRef = firebase.firestore().collection('people').doc(currentUser.uid);
+        const currentUserDoc = await currentUserRef.get();
+        const currentUserData = currentUserDoc.data();
         
+        // Find matches where both users have each other in their swipes field
+        const querySnapshot = await firebase.firestore().collection('people')
+          .where('swipes', 'array-contains', currentUser.uid) // Current user swiped right
+          .get();
+
+        const matchedPeople = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          .filter(person => person.swipes && person.swipes.includes(currentUser.uid)); // Matched both ways
+
+        setMatches(matchedPeople);
+        setLoading(false);
+        setError(null);
       } catch (error) {
-        console.error('Error fetching people:', error);
+        console.error('Error fetching matches:', error);
+        setError('Failed to fetch matches. Please try again later.');
+        setLoading(false);
       }
     };
 
-    fetchPeople();
-  }, []); // Run once on component mount
+    fetchMatches();
+  }, [currentUser]); // Run effect when currentUser changes
 
   return (
     <div className='chats'>
-      {people.map(person => (
-        <Chat
-          key={person.id} // Use the document ID as the key
-          id={person.id} // Pass the document ID as a prop
-          name={person.name}
-          profilePic={person.url}
-          age={person.age}
-        />
-      ))}
+      {loading ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div>Error: {error}</div>
+      ) : matches.length === 0 ? (
+        <div>No matches found</div>
+      ) : (
+        matches.map(match => (
+          <Chat
+            key={match.id}
+            id={match.id}
+            name={match.name}
+            profilePic={match.picture}
+            message="You matched!"
+            timestamp="" // Set timestamp as needed
+          />
+        ))
+      )}
     </div>
   );
 }

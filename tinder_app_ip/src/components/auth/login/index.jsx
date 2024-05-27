@@ -27,7 +27,7 @@ const Login = () => {
 
     return (
         <>
-            {userLoggedIn && <Navigate to="/home" replace />}
+            {userLoggedIn && <Navigate to="/" replace />}
             <main className="login-main">
                 <div className="login-card">
                     <img src="https://i.ibb.co/7RfGh8N/Whats-App-Image-2024-05-11-at-19-47-30-9884f067.jpg" alt="Logo" className="login-logo" />
