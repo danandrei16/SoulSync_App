@@ -23,7 +23,7 @@ const Register = () => {
             setIsRegistering(true);
             try {
                 await doCreateUserWithEmailAndPassword(email, password);
-                navigate('/home'); // Navigate after successful registration
+                navigate('/'); // Navigate after successful registration
             } catch (error) {
                 setErrorMessage(error.message);
                 setIsRegistering(false);
@@ -33,7 +33,7 @@ const Register = () => {
 
     return (
         <>
-            {userLoggedIn && <Navigate to="/home" replace />}
+            {userLoggedIn && <Navigate to="/" replace />}
             <main className="register-main">
                 <div className="register-card">
                     <img src="https://i.ibb.co/7RfGh8N/Whats-App-Image-2024-05-11-at-19-47-30-9884f067.jpg" alt="Logo" className="register-logo"/>

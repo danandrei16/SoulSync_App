@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react';
 import './Header.css';
 import PersonIcon from '@mui/icons-material/Person';
 import ForumIcon from '@mui/icons-material/Forum';
-import ExitToAppIcon from '@mui/icons-material/Logout';
+import HomeIcon from '@mui/icons-material/Home';
 import { IconButton } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { auth } from './firebase'; // Import the auth instance from your firebase.js file
-import { set } from 'firebase/database';
 
 function Header({ backButton }) {
-    const navigate = useNavigate();
     const [userEmail, setUserEmail] = useState('');
 
     useEffect(() => {
@@ -30,17 +28,15 @@ function Header({ backButton }) {
             <Link to='/profile'>
                 <IconButton>
                     <PersonIcon fontSize='large' className='header__icon' />
-                    <p>{userEmail}</p> {/* Display the user's email here */}
                 </IconButton>
             </Link>
             
             <Link to='/'>
-                <img
-                    className='header__logo'
-                    src='https://i.ibb.co/7RfGh8N/Whats-App-Image-2024-05-11-at-19-47-30-9884f067.jpg'
-                    alt='Tinder Logo'
-                ></img>
+                <IconButton>
+                    <HomeIcon fontSize='large' className='header__icon' />
+                </IconButton>
             </Link>
+            
             <Link to='/chat'>
                 <IconButton>
                     <ForumIcon fontSize='large' className='header__icon' />
