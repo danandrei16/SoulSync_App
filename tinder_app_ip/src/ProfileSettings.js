@@ -9,6 +9,7 @@ import { auth } from "./firebase";
 function ProfileSettings() {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
+  const [starSign, setStarSign] = useState("");
   const [birthDay, setBirthDay] = useState(""); // Add birthTime state
   const [birthTime, setBirthTime] = useState(""); // Add birthTime state
   const [description, setDescription] = useState("");
@@ -16,7 +17,6 @@ function ProfileSettings() {
   const [preference, setPreference] = useState("");
   const [location, setLocation] = useState("");
   const [height, setHeight] = useState("");
-  const [starSign, setStarSign] = useState("");
   const [lookingFor, setLookingFor] = useState("");
   const [savedMessage, setSavedMessage] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
@@ -52,7 +52,6 @@ function ProfileSettings() {
       if (!userDocument.empty) {
         const userData = userDocument.docs[0].data();
         setName(userData.name || "");
-        setAge(userData.age || "");
         setBirthDay(userData.birthDay || ""); // Fetch birthTime
         setBirthTime(userData.birthTime || ""); // Fetch birthTime
         setDescription(userData.description || "");
@@ -60,16 +59,73 @@ function ProfileSettings() {
         setPreference(userData.preference || "");
         setLocation(userData.location || "");
         setHeight(userData.height || "");
-        setStarSign(userData.starSign || "");
         setLookingFor(userData.lookingFor || "");
         setPictureUrl(userData.picture || ""); // Set the profile picture URL if it exists
+        // Calculate and set the age
+        if (userData.birthDay) {
+          setAge(calculateAge(userData.birthDay));
+          console.log(calculateAge(userData.birthDay));
+          setStarSign(getSunSign(userData.birthDay));
+        }
+        
       }
       
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
   };
-
+  const calculateAge = (birthDate) => {
+    const today = new Date();
+    console.log('Today:', today);
+    
+    const birthDateObj = new Date(birthDate);
+    console.log('Birth Date:', birthDateObj);
+    
+    let age = today.getFullYear() - birthDateObj.getFullYear();
+    const monthDifference = today.getMonth() - birthDateObj.getMonth();
+  
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDateObj.getDate())) {
+      age--;
+    }
+    
+    console.log('Age:', age);
+  
+    return age;
+  };
+  
+  const getSunSign = (birthDate) => {
+    const date = new Date(birthDate);
+    const month = date.getMonth() + 1; // Month is zero-indexed in JavaScript
+    const day = date.getDate();
+  
+    if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) {
+      return "Aries";
+    } else if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) {
+      return "Taurus";
+    } else if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) {
+      return "Gemini";
+    } else if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) {
+      return "Cancer";
+    } else if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) {
+      return "Leo";
+    } else if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) {
+      return "Virgo";
+    } else if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) {
+      return "Libra";
+    } else if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) {
+      return "Scorpio";
+    } else if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) {
+      return "Sagittarius";
+    } else if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) {
+      return "Capricorn";
+    } else if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) {
+      return "Aquarius";
+    } else {
+      return "Pisces";
+    }
+  };
+  
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -94,6 +150,7 @@ function ProfileSettings() {
       await firebase.firestore().collection("people").doc(documentId).update({
         name,
         age,
+        starSign,
         birthDay,
         birthTime,
         description,
@@ -101,7 +158,6 @@ function ProfileSettings() {
         preference,
         location,
         height,
-        starSign,
         lookingFor,
       });
 
@@ -109,7 +165,6 @@ function ProfileSettings() {
 
       // Clear input fields and reset profile picture state
       setName("");
-      setAge("");
       setBirthDay( ""); // Fetch birthTime
       setBirthTime(""); // Reset birthTime
       setDescription("");
@@ -117,7 +172,6 @@ function ProfileSettings() {
       setPreference("");
       setLocation("");
       setHeight("");
-      setStarSign("");
       setLookingFor("");
       setProfilePicture(null);
       setSavedMessage("Profile information saved successfully!");
@@ -203,11 +257,6 @@ function ProfileSettings() {
           Name:
           <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
         </label>
-
-        <label className="input-label">
-          Age:
-          <input type="number" value={age} onChange={(e) => setAge(e.target.value)} />
-        </label>
         
         <label className="input-label">
           Birth Day:
@@ -265,30 +314,7 @@ function ProfileSettings() {
           Height:
           <input type="text" value={height} onChange={(e) => setHeight(e.target.value)} />
         </label>
-
-        <label className="input-label">
-          Star Sign:
-          <select
-            value={starSign}
-            onChange={(e) => setStarSign(e.target.value)}
-            className="select-field"
-          >
-            <option value="">Select</option>
-            <option value="Aries">Aries</option>
-            <option value="Taurus">Taurus</option>
-            <option value="Gemini">Gemini</option>
-            <option value="Cancer">Cancer</option>
-            <option value="Leo">Leo</option>
-            <option value="Virgo">Virgo</option>
-            <option value="Libra">Libra</option>
-            <option value="Scorpio">Scorpio</option>
-            <option value="Sagittarius">Sagittarius</option>
-            <option value="Capricorn">Capricorn</option>
-            <option value="Aquarius">Aquarius</option>
-            <option value="Pisces">Pisces</option>
-          </select>
-        </label>
-
+        
         <label className="input-label">
           Looking For:
           <select
