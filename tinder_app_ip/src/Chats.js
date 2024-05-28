@@ -12,19 +12,31 @@ function Chats() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!currentUser) {
+      setLoading(false);
+      setError('User not logged in');
+      return;
+    }
+
     const fetchMatches = async () => {
       try {
         const currentUserRef = firebase.firestore().collection('people').doc(currentUser.uid);
         const currentUserDoc = await currentUserRef.get();
         const currentUserData = currentUserDoc.data();
-        
+
+        if (!currentUserData || !currentUserData.swipes) {
+          setMatches([]);
+          setLoading(false);
+          return;
+        }
+
         // Find matches where both users have each other in their swipes field
         const querySnapshot = await firebase.firestore().collection('people')
           .where('swipes', 'array-contains', currentUser.uid) // Current user swiped right
           .get();
 
         const matchedPeople = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-          .filter(person => person.swipes && person.swipes.includes(currentUser.uid)); // Matched both ways
+          .filter(person => currentUserData.swipes.includes(person.id)); // Matched both ways
 
         setMatches(matchedPeople);
         setLoading(false);
@@ -37,7 +49,14 @@ function Chats() {
     };
 
     fetchMatches();
-  }, [currentUser]); // Run effect when currentUser changes
+
+    // Cleanup function to prevent memory leaks
+    return () => {
+      setMatches([]);
+      setLoading(true);
+      setError(null);
+    };
+  }, [currentUser]);
 
   return (
     <div className='chats'>
