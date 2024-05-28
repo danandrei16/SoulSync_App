@@ -69,17 +69,18 @@ function Card() {
                 <div key={index} style={{ position: 'absolute', width: '100%', left: 0, zIndex: index === 0 ? 2 : 1 }}>
                     <div className='swipe'>
                         <div className='cardContainer'>
-                            <div style={{ backgroundImage: `url(${person.picture})` }} className='card'>
-                                <h3>{person.name}, {person.age}</h3>
-                                {showDetails && (
-                                    <div className="details">
-                                        <p>{person.description}</p>
-                                        <p>{person.location}</p>
-                                        <p>{person.height}</p>
-                                        <p>{person.starSign}</p>
-                                        <p>{person.lookingFor}</p>
-                                    </div>
-                                )}
+                        <div style={{ backgroundImage: `url(${person.picture})` }} className='card'>
+                            <h3>{person.name}, {person.age}</h3>
+                            {showDetails && (
+                                <div className="details">
+                                    <p><strong>Description: </strong> {person.description}</p>
+                                    <p><strong>Location:</strong> {person.location}</p>
+                                    <p><strong>Gender:</strong> {person.gender}</p>
+                                    <p><strong>Heigh:</strong> {person.height}</p>
+                                    <p><strong>Star Sign:</strong> {person.starSign}</p>
+                                    <p><strong>Looking for:</strong> {person.lookingFor}</p>
+                                </div>
+                            )}
                             </div>
                             {showDetails ? (
                                 <button className="undoButton" onClick={undoDetails}>

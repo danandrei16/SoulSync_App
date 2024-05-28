@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Listen for authentication state changes
@@ -27,6 +28,7 @@ function App() {
         // User is signed out
         setUser(null);
       }
+      setLoading(false); // Set loading to false after authentication state change
     });
 
     // Cleanup function
@@ -37,17 +39,17 @@ function App() {
     <Router>
       <AuthProvider>
         <div className="App">
-          {/* Render Header only if user is logged in */}
-          {user && <Header />}
+          {/* Render Header only if user is logged in and email is verified */}
+          {!loading && user && user.emailVerified && <Header />}
           <Routes>
             <Route path="/chat/:person" element={<ChatScreen />} />
             <Route path="/chat" element={<Chats />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/profile_settings" element={<ProfileSettings />} /> {/* Route for UserProfile */}
             
-
+            {/* Render Home or Login based on authentication state */}
             <Route path="/" element={
-              user ? (
+              user && user.emailVerified ? (
                 <div className="homeContainer">
                     <TinderCards />
                     <SwipeButtons />
@@ -57,7 +59,6 @@ function App() {
               )
             } />
             <Route path="/register" element={<Register />} />
-            {/* Add a route for /login */}
             <Route path="/login" element={<Login />} />
           </Routes>
         </div>
@@ -65,5 +66,6 @@ function App() {
     </Router>
   );
 }
+
 
 export default App;

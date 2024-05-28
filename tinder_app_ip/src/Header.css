@@ -1,8 +1,8 @@
-.header{
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #f9f9f9;
+    background: linear-gradient(to right, #e0b3ff, #8d31de); /* Gradient de la stânga la dreapta */
 }
 .header__logo{
     height: 43px;

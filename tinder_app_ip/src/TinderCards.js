@@ -137,59 +137,56 @@ function TinderCards() {
         return <div>Error: {error}</div>;
     }
 
-    return (
-        <div className='tinderCards__cardContainer'>
-            {showMatch && (
-                <div className="matchConfirmation">
-                    <p>You have matched!</p>
-                </div>
-            )}
-            {/* Render the current and next cards */}
-            {people.slice(currentIndex, currentIndex + 2).map((person, index) => (
-                <div key={index} style={{ position: 'absolute', width: '100%', left: 0, zIndex: index === 0 ? 2 : 1 }}>
-                    <TinderCard
-                        className='swipe'
-                        key={person.name}
-                        onSwipe={(dir) => onSwipe(dir, person.id)}
-                        preventSwipe={['up', 'down']}
-                    >
-                        <div className='cardContainer'>
-                            <div style={{
-                                backgroundImage: `url(${person.picture})` }} className='card'>
-                                <h3>{person.name}, {person.age}</h3>
-                                {showDetails && (
-                                    <div className="details">
-                                        <p>{person.description}</p>
-                                        <p>{person.location}</p>
-                                        <p>{person.height}</p>
-                                        <p>{person.starSign}</p>
-                                        <p>{person.lookingFor}</p>
-                                    </div>
-                                )}
-                            </div>
-                            {showDetails ? (
-                                <button className="undoButton" onClick={undoDetails}>
-                                    {/* Upper arrow icon */}
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                        <circle cx="12" cy="12" r="10" fill="white" />
-                                        <path d="M12 15l-6-6h12z" fill="black" />
-                                    </svg>
-                                </button>
-                            ) : (
-                                <button className="showDetailsButton" onClick={toggleDetails}>
-                                    {/* Down arrow icon inside a circle */}
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                        <circle cx="12" cy="12" r="10" fill="white" />
-                                        <path d="M12 9l-6 6h12z" fill="black" />
-                                    </svg>
-                                </button>
+return (
+    <div className='tinderCards__cardContainer'>
+        {/* Render the current and next cards */}
+        {people.slice(currentIndex, currentIndex + 2).map((person, index) => (
+            <div key={index} style={{ position: 'absolute', width: '100%', left: 0, zIndex: index === 0 ? 2 : 1 }}>
+                <TinderCard
+                    className='swipe'
+                    key={person.name}
+                    onSwipe={(dir) => onSwipe(dir, person.id)}
+                    preventSwipe={['up', 'down']}
+                >
+                    <div className='cardContainer'>
+                        <div style={{ backgroundImage: `url(${person.picture})` }} className='card'>
+                            <h3>{person.name}, {person.age}</h3>
+                            {showDetails && (
+                                <div className="details">
+                                    <p><strong>Description: </strong> {person.description}</p>
+                                    <p><strong>Location:</strong> {person.location}</p>
+                                    <p><strong>Gender:</strong> {person.gender}</p>
+                                    <p><strong>Heigh:</strong> {person.height}</p>
+                                    <p><strong>Star Sign:</strong> {person.starSign}</p>
+                                    <p><strong>Looking for:</strong> {person.lookingFor}</p>
+                                </div>
+
                             )}
                         </div>
-                    </TinderCard>
-                </div>
-            ))}
-        </div>
-    );
+                        {showDetails ? (
+                            <button className="undoButton" onClick={undoDetails}>
+                                {/* Upper arrow icon */}
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                    <circle cx="12" cy="12" r="10" fill="white" />
+                                    <path d="M12 15l-6-6h12z" fill="black" />
+                                </svg>
+                            </button>
+                        ) : (
+                            <button className="showDetailsButton" onClick={toggleDetails}>
+                                {/* Down arrow icon inside a circle */}
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                    <circle cx="12" cy="12" r="10" fill="white" />
+                                    <path d="M12 9l-6 6h12z" fill="black" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                </TinderCard>
+            </div>
+        ))}
+    </div>
+);
+
 }
 
 export default TinderCards;
