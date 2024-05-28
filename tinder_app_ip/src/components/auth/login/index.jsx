@@ -11,9 +11,11 @@ const Login = () => {
     const [isSigningIn, setIsSigningIn] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
+    
     const onSubmit = async (e) => {
         e.preventDefault();
         if (!isSigningIn) {
+            
             setIsSigningIn(true);
             try {
                 await doSignInWithEmailAndPassword(email, password);

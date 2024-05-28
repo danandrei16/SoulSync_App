@@ -21,10 +21,11 @@ const Register = () => {
         }
         if (!isRegistering) {
             setIsRegistering(true);
+            setErrorMessage('Please verify your email');
             try {
                 await doCreateUserWithEmailAndPassword(email, password);
 
-                navigate('/'); // Navigate after successful registration
+                navigate('/login'); // Navigate after successful registration
             } catch (error) {
                 setErrorMessage(error.message);
             } finally {
