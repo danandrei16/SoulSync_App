@@ -1,22 +1,22 @@
 import React from "react";
 import "./SwipeButtons.css";
 import ReplayIcon from "@mui/icons-material/Replay";
-import CloseIcon from "@mui/icons-material/Close";
-import StarRateIcon from "@mui/icons-material/StarRate";
+import CloseIcon from "@mui/icons-material/Close"; 
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import FlashOnIcon from "@mui/icons-material/FlashOn";
 import { IconButton } from "@mui/material";
 
-function SwipeButtons() {
+function SwipeButtons({ onUndo, onSwipeLeft, onSwipeRight }) {
+  console.log('Rendering SwipeButtons');
+  
   return (
     <div className="swipeButtons">
-      <IconButton>
+      <IconButton onClick={onUndo}>
         <ReplayIcon fontSize="large" className="swipeButtons__repeat" />
       </IconButton>
-      <IconButton>
+      <IconButton onClick={onSwipeLeft}>
         <CloseIcon fontSize="large" className="swipeButtons__left" />
       </IconButton>
-      <IconButton>
+      <IconButton onClick={onSwipeRight}>
         <FavoriteIcon fontSize="large" className="swipeButtons__right" />
       </IconButton>
     </div>
