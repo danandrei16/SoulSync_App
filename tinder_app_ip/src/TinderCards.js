@@ -32,15 +32,23 @@ function TinderCards() {
             Aquarius: { Aries: 55, Taurus: 80, Gemini: 90, Cancer: 70, Leo: 70, Virgo: 50, Libra: 95, Scorpio: 60, Sagittarius: 60, Capricorn: 70, Aquarius: 80, Pisces: 55 },
             Pisces: { Aries: 65, Taurus: 85, Gemini: 50, Cancer: 90, Leo: 75, Virgo: 70, Libra: 50, Scorpio: 95, Sagittarius: 75, Capricorn: 85, Aquarius: 55, Pisces: 80 }
             };
-        // Example criteria for compatibility score calculation
-        if (user1.gender === user2.preference && user2.gender === user1.preference) {
-            score += 50;
+        
+        // If there is no gender compatibility score is negative
+        if (! (user1.gender === user2.preference && user2.gender === user1.preference)) {
+            return -1;
         }
+        
+        // If the users are not looking for the same thing score is negative
+        if (user1.lookingFor !== user2.lookingFor) {
+            return -1;
+        }
+        // Negative score means no display
+        // To undo comment the above two ifs
         
         score += zodiacCompatibility[user1.starSign][user2.starSign];
         
         // Add more criteria as needed
-
+        
         return score;
     };
 
@@ -59,7 +67,8 @@ function TinderCards() {
                     .map(person => ({
                         ...person,
                         compatibilityScore: calculateCompatibilityScore(currentUserData, person) // Calculate compatibility score
-                    }));
+                    }))
+                    .filter(person => person.compatibilityScore >= 0);
 
                 // Sort people by compatibility score in descending order
                 fetchedPeople.sort((a, b) => b.compatibilityScore - a.compatibilityScore);
@@ -154,7 +163,7 @@ return (
                 >
                     <div className='cardContainer'>
                         <div style={{ backgroundImage: `url(${person.picture})` }} className='card'>
-                            <h3>{person.name}, {person.age}</h3>
+                        <h3>{person.name}, {person.age}, {person.compatibilityScore}%</h3>
                             {showDetails && (
                                 <div className="details">
                                     <p><strong>Description: </strong> {person.description}</p>

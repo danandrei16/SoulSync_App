@@ -9,11 +9,14 @@ import { Link } from 'react-router-dom';
 import { useAuth } from './auth'; // Import the useAuth hook from your auth.js file
 import firebase from 'firebase/compat/app'; 
 import 'firebase/compat/firestore'; // Import firestore correctly
+import DarkModeIcon from '@mui/icons-material/DarkMode'; // Import the DarkModeIcon component from Material-UI
 
 function Header({ backButton }) {
     const { currentUser } = useAuth(); // Get the currently authenticated user from the auth context
     const [anchorEl, setAnchorEl] = useState(null);
     const [notifications, setNotifications] = useState([]);
+    const [darkMode, setDarkMode] = useState(false); // State variable for dark mode
+
 
     useEffect(() => {
         if (currentUser) {
@@ -37,6 +40,12 @@ function Header({ backButton }) {
 
     const handleCloseNotifications = () => {
         setAnchorEl(null);
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+        if(darkMode == true) document.body.style.backgroundColor = "gray";
+        else document.body.style.backgroundColor = "white";// Save dark mode preference to local storage or user settings
     };
 
     return (
@@ -82,6 +91,10 @@ function Header({ backButton }) {
                     ))}
                 </List>
             </Popover>
+
+            <IconButton onClick={toggleDarkMode}> {/* Dark mode button */}
+                <DarkModeIcon fontSize='large' className='header__icon' />
+            </IconButton>
 
             <Link to='/chat'>
                 <IconButton>
