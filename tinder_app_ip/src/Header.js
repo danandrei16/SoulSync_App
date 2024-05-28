@@ -17,8 +17,7 @@ function Header({ backButton }) {
 
     useEffect(() => {
         if (currentUser) {
-            console.log('Fetching notifications for user:', currentUser.uid);
-            const unsubscribeMatches = firebase.firestore().collection('people').doc(currentUser.uid)
+            const unsubscribe = firebase.firestore().collection('people').doc(currentUser.uid)
                 .onSnapshot((doc) => {
                     if (doc.exists) {
                         const userData = doc.data();
@@ -28,31 +27,7 @@ function Header({ backButton }) {
                     }
                 });
 
-            const unsubscribeMessages = firebase.firestore().collection('messages')
-                .where('receiverName', '==', currentUser.uid)
-                .onSnapshot((querySnapshot) => {
-                    const receivedMessages = [];
-                    querySnapshot.forEach((doc) => {
-                        const messageData = doc.data();
-                        receivedMessages.push({
-                            content: messageData.content,
-                            senderName: messageData.senderName,
-                            timestamp: messageData.timestamp.toDate() // Convert Firestore timestamp to JavaScript Date object
-                        });
-                    });
-
-                    // Format messages as notifications
-                    const formattedMessages = receivedMessages.map((message) => {
-                        return `Message from ${message.senderName}: ${message.content} (${message.timestamp})`;
-                    });
-
-                    setNotifications((prevNotifications) => [...prevNotifications, ...formattedMessages]);
-                });
-
-            return () => {
-                unsubscribeMatches();
-                unsubscribeMessages();
-            };
+            return () => unsubscribe();
         }
     }, [currentUser]);
 

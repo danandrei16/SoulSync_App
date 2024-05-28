@@ -12,7 +12,7 @@ function ChatScreen() {
     const [matchedUser, setMatchedUser] = useState(null);
     const { person } = useParams(); // Extract the 'person' parameter from the URL
     const currentUser = auth.currentUser;
-
+    
     useEffect(() => {
         // Fetch matched user's data from Firebase Firestore
         const fetchMatchedUser = async () => {
@@ -32,23 +32,18 @@ function ChatScreen() {
     }, [person]); // Update when the 'person' parameter changes
 
     useEffect(() => {
-        // Fetch messages from Firebase Firestore
-        const fetchMessages = async () => {
-            try {
-                const messagesSnapshot = await firebase.firestore().collection('messages')
-                    .where('senderName', 'in', [currentUser?.uid, person])
-                    .where('receiverName', 'in', [currentUser?.uid, person])
-                    .orderBy('timestamp', 'asc')
-                    .get();
-                const messagesData = messagesSnapshot.docs.map(doc => doc.data());
+        const unsubscribe = firebase.firestore().collection('messages')
+            .where('senderName', 'in', [currentUser?.uid, person])
+            .where('receiverName', 'in', [currentUser?.uid, person])
+            .orderBy('timestamp', 'asc')
+            .onSnapshot(snapshot => {
+                const messagesData = snapshot.docs.map(doc => doc.data());
                 setMessages(messagesData);
-            } catch (error) {
-                console.error('Error fetching messages:', error);
-            }
-        };
-
-        fetchMessages();
+            });
+    
+        return () => unsubscribe();
     }, [person, currentUser.uid]);
+    
 
     const handleSend = async (e) => {
         e.preventDefault();
