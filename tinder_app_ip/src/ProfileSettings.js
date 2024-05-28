@@ -263,7 +263,7 @@ function ProfileSettings() {
           <input
             type="date"
             value={birthDay}
-            onChange={(e) => setBirthDay(e.target.value)}
+            onChange={(e) => setBirthDay(e.target.value)} className="select-field2"
           />
         </label>
         
@@ -272,7 +272,7 @@ function ProfileSettings() {
           <input
             type="time"
             value={birthTime}
-            onChange={(e) => setBirthTime(e.target.value)}
+            onChange={(e) => setBirthTime(e.target.value)} className="select-field2"
           />
         </label>
         
@@ -283,7 +283,7 @@ function ProfileSettings() {
 
         <label className="input-label">
           Gender:
-          <select value={gender} onChange={(e) => setGender(e.target.value)} className="select-field">
+          <select value={gender} onChange={(e) => setGender(e.target.value)} className="select-field2">
             <option value="">Select</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
@@ -296,7 +296,7 @@ function ProfileSettings() {
           <select
             value={preference}
             onChange={(e) => setPreference(e.target.value)}
-            className="select-field"
+            className="select-field2"
           >
             <option value="">Select</option>
             <option value="male">Male</option>
