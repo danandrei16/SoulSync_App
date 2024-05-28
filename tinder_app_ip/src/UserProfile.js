@@ -5,19 +5,11 @@ import "firebase/compat/firestore";
 import { auth } from "./firebase";
 import { IconButton } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/Logout';
+import Card from './Card'; // Import the Card component
 
 import './UserProfile.css'; // Import CSS file for styling
 
 function UserProfile( {backButton} ) {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [description, setDescription] = useState("");
-  const [gender, setGender] = useState("");
-  const [preference, setPreference] = useState("");
-  const [location, setLocation] = useState("");
-  const [height, setHeight] = useState("");
-  const [starSign, setStarSign] = useState("");
-  const [lookingFor, setLookingFor] = useState("");
 
   useEffect(() => {
     fetchUserProfile();
@@ -65,15 +57,6 @@ function UserProfile( {backButton} ) {
 
       if (!userDocument.empty) {
         const userData = userDocument.docs[0].data();
-        setName(userData.name || "");
-        setAge(userData.age || "");
-        setDescription(userData.description || "");
-        setGender(userData.gender || "");
-        setPreference(userData.preference || "");
-        setLocation(userData.location || "");
-        setHeight(userData.height || "");
-        setStarSign(userData.starSign || "");
-        setLookingFor(userData.lookingFor || "");
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -82,46 +65,15 @@ function UserProfile( {backButton} ) {
 
   return (
     <div>
-      <h1>User Profile</h1>
+
       <div className="user-profile">
-        {/* Render user information */}
-        <div>
-          <label>Name:</label>
-          <div>{name}</div>
+      <div>
+            <h1>User Profile</h1>
+            {/* Render the Tinder card for the current user */}
+            <div>
+                <Card />
+            </div>
         </div>
-        <div>
-          <label>Age:</label>
-          <div>{age}</div>
-        </div>
-        <div>
-          <label>Description:</label>
-          <div>{description}</div>
-        </div>
-        <div>
-          <label>Gender:</label>
-          <div>{gender}</div>
-        </div>
-        <div>
-          <label>Preference:</label>
-          <div>{preference}</div>
-        </div>
-        <div>
-          <label>Location:</label>
-          <div>{location}</div>
-        </div>
-        <div>
-          <label>Height:</label>
-          <div>{height}</div>
-        </div>
-        <div>
-          <label>Star Sign:</label>
-          <div>{starSign}</div>
-        </div>
-        <div>
-          <label>Looking For:</label>
-          <div>{lookingFor}</div>
-        </div>
-        {/* Add a button to navigate to profile settings */}
         <Link to="/profile_settings">
           <button className="settings-button">Edit Profile</button>
         </Link>
