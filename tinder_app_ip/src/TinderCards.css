@@ -82,15 +82,33 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-54%, -50%);
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
-    display: none; /* Initially hide the details */
-    text-align: center; /* Center align the details */
-    display: block;
-    width: 100vw; /* Adjust to match the container width */
+    display: none;
+    width: 100vw; /* Ajustează pentru a se potrivi cu lățimea containerului */
     max-width: 350px;
     height: 400px;
+    display: flex; /* Folosește flexbox */
+    justify-content: center; /* Centrează orizontal conținutul */
+    align-items: left; /* Centrează vertical conținutul */
+    flex-direction: column; /* Stabilește direcția coloanelor pentru a adăuga un item pe fiecare linie */
+    padding: 20px; /* Adaugă spațiu în jurul conținutului */
+    font-size: 1.0em; /* Setează dimensiunea fontului */
+    margin-left: 20px; /* Mărește marginea stângă a textului */
+    color: #191a1b96
 }
+
+.cardContainer .details p{
+    margin-bottom: 15px; /* Adaugă o linie nouă după fiecare item */
+}
+
+.details-label {
+    font-weight: bold; /* Face textul "nume:" și "prenume:" bolduit */
+}
+
+
+
+
 
 

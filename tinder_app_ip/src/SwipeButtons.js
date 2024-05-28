@@ -17,13 +17,7 @@ function SwipeButtons() {
         <CloseIcon fontSize="large" className="swipeButtons__left" />
       </IconButton>
       <IconButton>
-        <StarRateIcon fontSize="large" className="swipeButtons__star" />
-      </IconButton>
-      <IconButton>
         <FavoriteIcon fontSize="large" className="swipeButtons__right" />
-      </IconButton>
-      <IconButton>
-        <FlashOnIcon fontSize="large" className="swipeButtons__lightning" />
       </IconButton>
     </div>
   );
