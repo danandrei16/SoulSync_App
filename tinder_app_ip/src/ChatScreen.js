@@ -74,7 +74,6 @@ function ChatScreen() {
 
     return (
         <div className='chatScreen'>
-            <p className='chatScreen__timestamp'>YOU MATCHED WITH {matchedUser?.name} ON 10/08/23</p>
             <div className='chatScreen__messages'>
                 {messages.map((message, index) => (
                     <div key={index} className={message.senderName === currentUser?.name ? 'chatScreen__messageUser' : 'chatScreen__message'}>

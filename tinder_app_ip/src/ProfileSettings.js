@@ -60,6 +60,7 @@ function ProfileSettings() {
         setLookingFor(userData.lookingFor || "");
         setPictureUrl(userData.picture || ""); // Set the profile picture URL if it exists
       }
+      
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
@@ -155,6 +156,10 @@ function ProfileSettings() {
 
       setPictureUrl(url);
       console.log("Profile picture updated successfully!");
+
+      setTimeout(() => {
+        navigate("/profile");
+      }, 200); // 500 milliseconds delay
 
     } catch (error) {
       console.error("Error updating profile picture:", error);
