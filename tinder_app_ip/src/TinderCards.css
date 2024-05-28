@@ -85,7 +85,6 @@
     transform: translate(-50%, -50%);
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
-    display: none; /* Initially hide the details */
     text-align: center; /* Center align the details */
     display: block;
     width: 100vw; /* Adjust to match the container width */
@@ -93,4 +92,15 @@
     height: 400px;
 }
 
-
+.matchConfirmation {
+    position: fixed;
+    top: 20vh; /* Adjust the vertical position as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    text-align: center;
+}
