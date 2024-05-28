@@ -10,24 +10,18 @@ function ChatScreen() {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]);
     const [matchedUser, setMatchedUser] = useState(null);
-    const [currentUser, setCurrentUser] = useState(null);
     const { person } = useParams(); // Extract the 'person' parameter from the URL
+    const currentUser = auth.currentUser;
 
     useEffect(() => {
         // Fetch matched user's data from Firebase Firestore
         const fetchMatchedUser = async () => {
             try {
                 const matchedUserDoc = await firebase.firestore().collection('people').doc(person).get(); // Use 'person' parameter as the document ID
-                const currentUserDoc = await firebase.firestore().collection('people').doc(auth.currentUser.uid).get(); // Use 'person' parameter as the document ID
                 if (matchedUserDoc.exists) {
                     setMatchedUser(matchedUserDoc.data());
                 } else {
                     console.log('No matched user found.');
-                }
-                if (currentUserDoc.exists) {
-                    setCurrentUser(currentUserDoc.data());
-                } else {
-                    console.log('No current user found.');
                 }
             } catch (error) {
                 console.error('Error fetching matched user:', error);
@@ -42,8 +36,8 @@ function ChatScreen() {
         const fetchMessages = async () => {
             try {
                 const messagesSnapshot = await firebase.firestore().collection('messages')
-                    .where('senderName', 'in', [currentUser?.name, matchedUser?.name])
-                    .where('receiverName', 'in', [currentUser?.name, matchedUser?.name])
+                    .where('senderName', 'in', [currentUser?.uid, person])
+                    .where('receiverName', 'in', [currentUser?.uid, person])
                     .orderBy('timestamp', 'asc')
                     .get();
                 const messagesData = messagesSnapshot.docs.map(doc => doc.data());
@@ -54,12 +48,12 @@ function ChatScreen() {
         };
 
         fetchMessages();
-    }, [matchedUser]);
+    }, [person, currentUser.uid]);
 
     const handleSend = async (e) => {
         e.preventDefault();
         if (input.trim() !== '') {
-            const newMessage = { senderName: currentUser?.name, receiverName: matchedUser?.name, timestamp: new Date(), content: input };
+            const newMessage = { senderName: currentUser?.uid, receiverName: person, timestamp: new Date(), content: input };
             setMessages([...messages, newMessage]);
             setInput('');
 
@@ -76,11 +70,11 @@ function ChatScreen() {
         <div className='chatScreen'>
             <div className='chatScreen__messages'>
                 {messages.map((message, index) => (
-                    <div key={index} className={message.senderName === currentUser?.name ? 'chatScreen__messageUser' : 'chatScreen__message'}>
-                        {message.senderName !== currentUser?.name && (
+                    <div key={index} className={message.senderName === currentUser?.uid ? 'chatScreen__messageUser' : 'chatScreen__message'}>
+                        {message.senderName !== currentUser?.uid && (
                             <Avatar className='chatScreen__image' alt={message.senderName} src={matchedUser?.picture} />
                         )}
-                        <p className={message.senderName === currentUser?.name ? 'chatScreen__text chatScreen__textRight' : 'chatScreen__text'}>
+                        <p className={message.senderName === currentUser?.uid ? 'chatScreen__text chatScreen__textRight' : 'chatScreen__text'}>
                             {message.content}
                         </p>
                     </div>
