@@ -139,7 +139,11 @@ function TinderCards() {
 
 return (
     <div className='tinderCards__cardContainer'>
-        {/* Render the current and next cards */}
+        {showMatch && (
+                <div className="matchConfirmation">
+                    <p>You have matched!</p>
+                </div>
+            )}
         {people.slice(currentIndex, currentIndex + 2).map((person, index) => (
             <div key={index} style={{ position: 'absolute', width: '100%', left: 0, zIndex: index === 0 ? 2 : 1 }}>
                 <TinderCard
