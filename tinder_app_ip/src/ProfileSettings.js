@@ -9,6 +9,8 @@ import { auth } from "./firebase";
 function ProfileSettings() {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
+  const [birthDay, setBirthDay] = useState(""); // Add birthTime state
+  const [birthTime, setBirthTime] = useState(""); // Add birthTime state
   const [description, setDescription] = useState("");
   const [gender, setGender] = useState("");
   const [preference, setPreference] = useState("");
@@ -51,6 +53,8 @@ function ProfileSettings() {
         const userData = userDocument.docs[0].data();
         setName(userData.name || "");
         setAge(userData.age || "");
+        setBirthDay(userData.birthDay || ""); // Fetch birthTime
+        setBirthTime(userData.birthTime || ""); // Fetch birthTime
         setDescription(userData.description || "");
         setGender(userData.gender || "");
         setPreference(userData.preference || "");
@@ -90,6 +94,8 @@ function ProfileSettings() {
       await firebase.firestore().collection("people").doc(documentId).update({
         name,
         age,
+        birthDay,
+        birthTime,
         description,
         gender,
         preference,
@@ -104,6 +110,8 @@ function ProfileSettings() {
       // Clear input fields and reset profile picture state
       setName("");
       setAge("");
+      setBirthDay( ""); // Fetch birthTime
+      setBirthTime(""); // Reset birthTime
       setDescription("");
       setGender("");
       setPreference("");
@@ -200,7 +208,25 @@ function ProfileSettings() {
           Age:
           <input type="number" value={age} onChange={(e) => setAge(e.target.value)} />
         </label>
-
+        
+        <label className="input-label">
+          Birth Day:
+          <input
+            type="date"
+            value={birthDay}
+            onChange={(e) => setBirthDay(e.target.value)}
+          />
+        </label>
+        
+        <label className="input-label">
+          Birth Time:
+          <input
+            type="time"
+            value={birthTime}
+            onChange={(e) => setBirthTime(e.target.value)}
+          />
+        </label>
+        
         <label className="input-label">
           Description:
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
