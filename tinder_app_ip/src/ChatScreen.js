@@ -10,6 +10,7 @@ function ChatScreen() {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]);
     const [matchedUser, setMatchedUser] = useState(null);
+    const [notifications, setNotifications] = useState([]);
     const { person } = useParams(); // Extract the 'person' parameter from the URL
     const currentUser = auth.currentUser;
     
@@ -29,6 +30,21 @@ function ChatScreen() {
         };
 
         fetchMatchedUser();
+
+        // Subscribe to notifications for the matched user
+        const unsubscribeNotifications = firebase.firestore().collection('people').doc(person)
+            .onSnapshot((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    setNotifications(userData.notifications || []);
+                } else {
+                    setNotifications([]);
+                }
+            });
+
+        return () => {
+            unsubscribeNotifications();
+        };
     }, [person]); // Update when the 'person' parameter changes
 
     useEffect(() => {
@@ -53,10 +69,23 @@ function ChatScreen() {
 
             // Add new message to Firebase Firestore
             try {
+                // Add the message to the 'messages' collection
                 await firebase.firestore().collection('messages').add(newMessage);
-            } catch (error) {
+            
+                // Add the notification to the receiver's 'people' document
+                await firebase.firestore().collection('people').doc(person).update({
+                  notifications: firebase.firestore.FieldValue.arrayUnion({
+                    type: 'message',
+                    content: input,
+                    sender: currentUser.uid,
+                    timestamp: new Date()
+                  })
+                });
+            
+                console.log('Message sent and notification added');
+              } catch (error) {
                 console.error('Error sending message:', error);
-            }
+              }
         }
     };
 
@@ -78,6 +107,15 @@ function ChatScreen() {
                 <input value={input} onChange={(e) => setInput(e.target.value)} className='chatScreen__inputField' type='text' placeholder='Type a message...' />
                 <button type='submit' className='chatScreen__inputButton'>SEND</button>
             </form>
+            
+            {/* Display notifications */}
+            {/* <div className="notifications">
+                {notifications.map((notification, index) => (
+                    <div key={index} className="notification">
+                        {notification.content} - {notification.sender}
+                    </div>
+                ))}
+            </div> */}
         </div>
     );
 }
