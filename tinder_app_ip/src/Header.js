@@ -104,7 +104,7 @@ function Header({ backButton }) {
                 <List style={{ zIndex: 1000, position: 'relative' }}>
                     {notifications.map((notification, index) => (
                         <ListItem button key={index}>
-                            <ListItemText primary={notification.content} />
+                            <ListItemText primary={notification} />
                         </ListItem>
                     ))}
                 </List>
