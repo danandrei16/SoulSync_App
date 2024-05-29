@@ -56,9 +56,28 @@ function ChatScreen() {
                 const messagesData = snapshot.docs.map(doc => doc.data());
                 setMessages(messagesData);
             });
-
+    
+        // Fetch notifications and format them as "<sender>: <message>"
+        const fetchNotifications = async () => {
+            try {
+                const matchedUserDoc = await firebase.firestore().collection('people').doc(person).get();
+                if (matchedUserDoc.exists) {
+                    const userData = matchedUserDoc.data();
+                    const formattedNotifications = userData.notifications.map(notification => `${notification.sender}: ${notification.content}`);
+                    setNotifications(formattedNotifications);
+                } else {
+                    setNotifications([]);
+                }
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+            }
+        };
+    
+        fetchNotifications();
+    
         return () => unsubscribe();
     }, [person, currentUser.uid]);
+    
     
 
     const handleSend = async (e) => {
@@ -108,14 +127,15 @@ function ChatScreen() {
                 <button type='submit' className='chatScreen__inputButton'>SEND</button>
             </form>
             
-            {/* Display notifications */}
+           {/* Display notifications */}
             {/* <div className="notifications">
                 {notifications.map((notification, index) => (
                     <div key={index} className="notification">
-                        {notification.content} - {notification.sender}
+                        {notification.sender}: {notification.content}
                     </div>
                 ))}
             </div> */}
+
         </div>
     );
 }
