@@ -12,7 +12,7 @@ function ChatScreen() {
     const [matchedUser, setMatchedUser] = useState(null);
     const { person } = useParams(); // Extract the 'person' parameter from the URL
     const currentUser = auth.currentUser;
-
+    
     useEffect(() => {
         // Fetch matched user's data from Firebase Firestore
         const fetchMatchedUser = async () => {
@@ -32,7 +32,6 @@ function ChatScreen() {
     }, [person]); // Update when the 'person' parameter changes
 
     useEffect(() => {
-        // Subscribe to messages collection for real-time updates
         const unsubscribe = firebase.firestore().collection('messages')
             .where('senderName', 'in', [currentUser?.uid, person])
             .where('receiverName', 'in', [currentUser?.uid, person])
@@ -42,9 +41,9 @@ function ChatScreen() {
                 setMessages(messagesData);
             });
 
-        // Unsubscribe from real-time updates when component unmounts
         return () => unsubscribe();
     }, [person, currentUser.uid]);
+    
 
     const handleSend = async (e) => {
         e.preventDefault();

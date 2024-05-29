@@ -9,16 +9,18 @@ import { Link } from 'react-router-dom';
 import { useAuth } from './auth'; // Import the useAuth hook from your auth.js file
 import firebase from 'firebase/compat/app'; 
 import 'firebase/compat/firestore'; // Import firestore correctly
+import DarkModeIcon from '@mui/icons-material/DarkMode'; // Import the DarkModeIcon component from Material-UI
 
 function Header({ backButton }) {
     const { currentUser } = useAuth(); // Get the currently authenticated user from the auth context
     const [anchorEl, setAnchorEl] = useState(null);
     const [notifications, setNotifications] = useState([]);
+    const [darkMode, setDarkMode] = useState(false); // State variable for dark mode
+
 
     useEffect(() => {
         if (currentUser) {
-            console.log('Fetching notifications for user:', currentUser.uid);
-            const unsubscribeMatches = firebase.firestore().collection('people').doc(currentUser.uid)
+            const unsubscribe = firebase.firestore().collection('people').doc(currentUser.uid)
                 .onSnapshot((doc) => {
                     if (doc.exists) {
                         const userData = doc.data();
@@ -28,31 +30,7 @@ function Header({ backButton }) {
                     }
                 });
 
-            const unsubscribeMessages = firebase.firestore().collection('messages')
-                .where('receiverName', '==', currentUser.uid)
-                .onSnapshot((querySnapshot) => {
-                    const receivedMessages = [];
-                    querySnapshot.forEach((doc) => {
-                        const messageData = doc.data();
-                        receivedMessages.push({
-                            content: messageData.content,
-                            senderName: messageData.senderName,
-                            timestamp: messageData.timestamp.toDate() // Convert Firestore timestamp to JavaScript Date object
-                        });
-                    });
-
-                    // Format messages as notifications
-                    const formattedMessages = receivedMessages.map((message) => {
-                        return `Message from ${message.senderName}: ${message.content} (${message.timestamp})`;
-                    });
-
-                    setNotifications((prevNotifications) => [...prevNotifications, ...formattedMessages]);
-                });
-
-            return () => {
-                unsubscribeMatches();
-                unsubscribeMessages();
-            };
+            return () => unsubscribe();
         }
     }, [currentUser]);
 
@@ -62,6 +40,12 @@ function Header({ backButton }) {
 
     const handleCloseNotifications = () => {
         setAnchorEl(null);
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+        if(darkMode == true) document.body.style.backgroundColor = "gray";
+        else document.body.style.backgroundColor = "white";// Save dark mode preference to local storage or user settings
     };
 
     return (
@@ -107,6 +91,10 @@ function Header({ backButton }) {
                     ))}
                 </List>
             </Popover>
+
+            <IconButton onClick={toggleDarkMode}> {/* Dark mode button */}
+                <DarkModeIcon fontSize='large' className='header__icon' />
+            </IconButton>
 
             <Link to='/chat'>
                 <IconButton>
