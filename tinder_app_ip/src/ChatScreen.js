@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './ChatScreen.css';
 import { Avatar } from '@mui/material';
 import firebase from 'firebase/compat/app';
@@ -13,7 +13,8 @@ function ChatScreen() {
     const [notifications, setNotifications] = useState([]);
     const { person } = useParams(); // Extract the 'person' parameter from the URL
     const currentUser = auth.currentUser;
-    
+    const messagesEndRef = useRef(null); // Referință către elementul de scroll
+
     useEffect(() => {
         // Fetch matched user's data from Firebase Firestore
         const fetchMatchedUser = async () => {
@@ -89,6 +90,10 @@ function ChatScreen() {
         }
     };
 
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
+
     return (
         <div className='chatScreen'>
             <div className='chatScreen__messages'>
@@ -102,6 +107,7 @@ function ChatScreen() {
                         </p>
                     </div>
                 ))}
+                <div ref={messagesEndRef} style={{ float: 'left', clear: 'both' }} /> {/* Element de referință pentru scroll */}
             </div>
             <form className='chatScreen__input' onSubmit={handleSend}>
                 <input value={input} onChange={(e) => setInput(e.target.value)} className='chatScreen__inputField' type='text' placeholder='Type a message...' />
