@@ -40,7 +40,7 @@ function ChatScreen() {
                 const messagesData = snapshot.docs.map(doc => doc.data());
                 setMessages(messagesData);
             });
-    
+
         return () => unsubscribe();
     }, [person, currentUser.uid]);
     
@@ -49,7 +49,6 @@ function ChatScreen() {
         e.preventDefault();
         if (input.trim() !== '') {
             const newMessage = { senderName: currentUser?.uid, receiverName: person, timestamp: new Date(), content: input };
-            setMessages([...messages, newMessage]);
             setInput('');
 
             // Add new message to Firebase Firestore
