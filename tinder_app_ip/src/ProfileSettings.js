@@ -10,8 +10,8 @@ function ProfileSettings() {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [starSign, setStarSign] = useState("");
-  const [birthDay, setBirthDay] = useState(""); // Add birthTime state
-  const [birthTime, setBirthTime] = useState(""); // Add birthTime state
+  const [birthDay, setBirthDay] = useState("");
+  const [birthTime, setBirthTime] = useState("");
   const [description, setDescription] = useState("");
   const [gender, setGender] = useState("");
   const [preference, setPreference] = useState("");
@@ -52,82 +52,59 @@ function ProfileSettings() {
       if (!userDocument.empty) {
         const userData = userDocument.docs[0].data();
         setName(userData.name || "");
-        setBirthDay(userData.birthDay || ""); // Fetch birthTime
-        setBirthTime(userData.birthTime || ""); // Fetch birthTime
+        setBirthDay(userData.birthDay || "");
+        setBirthTime(userData.birthTime || "");
         setDescription(userData.description || "");
         setGender(userData.gender || "");
         setPreference(userData.preference || "");
         setLocation(userData.location || "");
         setHeight(userData.height || "");
         setLookingFor(userData.lookingFor || "");
-        setPictureUrl(userData.picture || ""); // Set the profile picture URL if it exists
-        // Calculate and set the age
+        setPictureUrl(userData.picture || "");
         if (userData.birthDay) {
           setAge(calculateAge(userData.birthDay));
-          console.log(calculateAge(userData.birthDay));
           setStarSign(getSunSign(userData.birthDay));
         }
-        
       }
-      
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
   };
+
   const calculateAge = (birthDate) => {
     const today = new Date();
-    console.log('Today:', today);
-    
     const birthDateObj = new Date(birthDate);
-    console.log('Birth Date:', birthDateObj);
-    
     let age = today.getFullYear() - birthDateObj.getFullYear();
     const monthDifference = today.getMonth() - birthDateObj.getMonth();
-  
     if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDateObj.getDate())) {
       age--;
     }
-    
-    console.log('Age:', age);
-  
     return age;
   };
-  
+
   const getSunSign = (birthDate) => {
     const date = new Date(birthDate);
-    const month = date.getMonth() + 1; // Month is zero-indexed in JavaScript
+    const month = date.getMonth() + 1;
     const day = date.getDate();
-  
-    if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) {
-      return "Aries";
-    } else if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) {
-      return "Taurus";
-    } else if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) {
-      return "Gemini";
-    } else if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) {
-      return "Cancer";
-    } else if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) {
-      return "Leo";
-    } else if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) {
-      return "Virgo";
-    } else if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) {
-      return "Libra";
-    } else if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) {
-      return "Scorpio";
-    } else if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) {
-      return "Sagittarius";
-    } else if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) {
-      return "Capricorn";
-    } else if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) {
-      return "Aquarius";
-    } else {
-      return "Pisces";
-    }
+    if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return "Aries";
+    if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return "Taurus";
+    if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return "Gemini";
+    if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) return "Cancer";
+    if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return "Leo";
+    if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return "Virgo";
+    if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return "Libra";
+    if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) return "Scorpio";
+    if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) return "Sagittarius";
+    if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return "Capricorn";
+    if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return "Aquarius";
+    return "Pisces";
   };
-  
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setAge(calculateAge(birthDay));
+    setStarSign(getSunSign(birthDay));
+
     try {
       if (!auth.currentUser) {
         console.error("User is not logged in.");
@@ -149,8 +126,8 @@ function ProfileSettings() {
 
       await firebase.firestore().collection("people").doc(documentId).update({
         name,
-        age,
-        starSign,
+        age: calculateAge(birthDay),
+        starSign: getSunSign(birthDay),
         birthDay,
         birthTime,
         description,
@@ -163,23 +140,11 @@ function ProfileSettings() {
 
       console.log("Profile information updated successfully!");
 
-      // Clear input fields and reset profile picture state
-      setName("");
-      setBirthDay( ""); // Fetch birthTime
-      setBirthTime(""); // Reset birthTime
-      setDescription("");
-      setGender("");
-      setPreference("");
-      setLocation("");
-      setHeight("");
-      setLookingFor("");
-      setProfilePicture(null);
       setSavedMessage("Profile information saved successfully!");
 
-      // Redirect to /profile after a delay
       setTimeout(() => {
         navigate("/profile");
-      }, 500); // 500 milliseconds delay
+      }, 500);
     } catch (error) {
       console.error("Error updating profile information:", error);
     }
@@ -221,8 +186,7 @@ function ProfileSettings() {
 
       setTimeout(() => {
         navigate("/profile");
-      }, 200); // 500 milliseconds delay
-
+      }, 200);
     } catch (error) {
       console.error("Error updating profile picture:", error);
     }
@@ -249,7 +213,7 @@ function ProfileSettings() {
           Save Picture
         </button>
       </form>
-      
+
       <br/>
 
       <form onSubmit={handleSubmit}>
@@ -257,25 +221,27 @@ function ProfileSettings() {
           Name:
           <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
         </label>
-        
+
         <label className="input-label">
           Birth Day:
           <input
             type="date"
             value={birthDay}
-            onChange={(e) => setBirthDay(e.target.value)} className="select-field2"
+            onChange={(e) => setBirthDay(e.target.value)}
+            className="select-field2"
           />
         </label>
-        
+
         <label className="input-label">
           Birth Time:
           <input
             type="time"
             value={birthTime}
-            onChange={(e) => setBirthTime(e.target.value)} className="select-field2"
+            onChange={(e) => setBirthTime(e.target.value)}
+            className="select-field2"
           />
         </label>
-        
+
         <label className="input-label">
           Description:
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
@@ -314,7 +280,7 @@ function ProfileSettings() {
           Height:
           <input type="text" value={height} onChange={(e) => setHeight(e.target.value)} />
         </label>
-        
+
         <label className="input-label">
           Looking For:
           <select
@@ -334,6 +300,10 @@ function ProfileSettings() {
         </button>
         {savedMessage && <p>{savedMessage}</p>}
       </form>
+
+      <br/>
+
+      <Link to="/profile">Go to Profile</Link>
     </div>
   );
 }
