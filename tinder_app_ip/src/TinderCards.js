@@ -36,14 +36,18 @@ function TinderCards() {
             };
         
         // If there is no gender compatibility score is negative
-        if (! (user1.gender === user2.preference && user2.gender === user1.preference)) {
-            return -1;
-        }
+        // if (! (user1.gender === user2.preference && user2.gender === user1.preference)) {
+        //     return -1;
+        // }
         
-        // If the users are not looking for the same thing score is negative
-        if (user1.lookingFor !== user2.lookingFor) {
+        if (! ((user1.gender === user2.preference || user2.preference === 'any') && (user2.gender === user1.preference || user1.preference === 'any'))) {
             return -1;
         }
+
+        // If the users are not looking for the same thing score is negative
+        // if (user1.lookingFor !== user2.lookingFor) {
+        //     return -1;
+        // }
         // Negative score means no display
         // To undo comment the above two ifs
         
@@ -162,7 +166,7 @@ function TinderCards() {
     };
 
     const toggleDetails = () => {
-        setShowDetails(!showDetails);
+        setShowDetails(prevShowDetails => !prevShowDetails);
     };
 
     const undoDetails = () => {
@@ -213,37 +217,33 @@ function TinderCards() {
                     >
                         <div className='cardContainer' style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '20px', overflow: 'hidden', marginBottom: '20px' }}>
                             <div style={{ backgroundImage: `url(${person.picture})`, backgroundSize: 'cover', backgroundPosition: 'center', width: '100vw', maxWidth: '350px', height: '400px', borderRadius: '20px', position: 'relative', overflow: 'hidden' }} className='card'>
-                                <h3 style={{ position: 'absolute', bottom: '10px', left: '10px', color: 'white' }}>{person.name}, {person.age}</h3>
-                                {showDetails && (
-                                    <div className="details" style={{
-                                        position: 'absolute',
-                                        top: '50%',
-                                        left: '50%',
-                                        transform: 'translate(-54%, -50%)',
-                                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                        borderRadius: '10px',
-                                        display: 'none',
-                                        width: '100vw',
-                                        maxWidth: '350px',
-                                        height: '400px',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'left',
-                                        flexDirection: 'column',
-                                        padding: '20px',
-                                        fontSize: '1.0em',
-                                        marginLeft: '20px',
-                                        bottom: '200px',
-                                        color: '#191a1b96'
-                                    }}>
-                                        <p><strong>Description: </strong> {person.description}</p>
-                                        <p><strong>Location:</strong> {person.location}</p>
-                                        <p><strong>Gender:</strong> {person.gender}</p>
-                                        <p><strong>Height:</strong> {person.height}</p>
-                                        <p><strong>Star Sign:</strong> {person.starSign}</p>
-                                        <p><strong>Looking for:</strong> {person.lookingFor}</p>
-                                    </div>
-                                )}
+                                <h3 style={{ position: 'absolute', bottom: '10px', left: '10px', color: 'white' }}>{person.name}, {person.age}, {person.compatibilityScore}%</h3>
+                                <div className={`details ${showDetails ? 'show' : 'hide'}`} style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: `${showDetails ? '-10%' : '45.37%'}`, // Adjusted left property
+                                    transform: 'translate(-50%, -50%)',
+                                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                    borderRadius: '10px',
+                                    width: '100vw',
+                                    maxWidth: '350px',
+                                    height: '400px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'left',
+                                    flexDirection: 'column',
+                                    padding: '20px',
+                                    fontSize: '1.0em',
+                                    marginLeft: '20px',
+                                    color: '#191a1b96'
+                                }}>
+                                    <p><strong>Description: </strong> <br></br>{person.description}</p>
+                                    <p><strong>Location:</strong> {person.location}</p>
+                                    <p><strong>Gender:</strong> {person.gender}</p>
+                                    <p><strong>Height:</strong> {person.height}</p>
+                                    <p><strong>Star Sign:</strong> {person.starSign}</p>
+                                    <p><strong>Looking for:</strong> {person.lookingFor}</p>
+                                </div>
                             </div>
                             {showDetails ? (
                                 <button className="undoButton" onClick={undoDetails}>
@@ -264,6 +264,7 @@ function TinderCards() {
                     </TinderCard>
                 </div>
             ))}
+
             <div style = {{
                 display: 'flex',
                 position: 'fixed',

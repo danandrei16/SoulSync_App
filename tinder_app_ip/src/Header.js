@@ -17,7 +17,6 @@ function Header({ backButton }) {
     const [notifications, setNotifications] = useState([]);
     const [darkMode, setDarkMode] = useState(false); // State variable for dark mode
 
-
     useEffect(() => {
         if (currentUser) {
             const unsubscribe = firebase.firestore().collection('people').doc(currentUser.uid)
@@ -40,16 +39,29 @@ function Header({ backButton }) {
 
     const handleCloseNotifications = () => {
         setAnchorEl(null);
+        if (currentUser) {
+            // Clear notifications after closing
+            firebase.firestore().collection('people').doc(currentUser.uid).update({
+                notifications: []
+            }).then(() => {
+                setNotifications([]);
+            }).catch((error) => {
+                console.error("Error clearing notifications: ", error);
+            });
+        }
     };
 
     const toggleDarkMode = () => {
         setDarkMode(!darkMode);
-        if(darkMode == true) document.body.style.backgroundColor = "gray";
-        else document.body.style.backgroundColor = "white";// Save dark mode preference to local storage or user settings
+        document.body.style.backgroundColor = darkMode ? "white" : "gray"; // Save dark mode preference to local storage or user settings
     };
 
     return (
         <div className='header'>
+            <IconButton onClick={toggleDarkMode}> {/* Dark mode button */}
+                <DarkModeIcon fontSize='large' className='header__icon' />
+            </IconButton>
+            
             <Link to='/profile'>
                 <IconButton>
                     <PersonIcon fontSize='large' className='header__icon' />
@@ -59,6 +71,12 @@ function Header({ backButton }) {
             <Link to='/'>
                 <IconButton>
                     <HomeIcon fontSize='large' className='header__icon' />
+                </IconButton>
+            </Link>
+            
+            <Link to='/chat'>
+                <IconButton>
+                    <ForumIcon fontSize='large' className='header__icon' />
                 </IconButton>
             </Link>
 
@@ -83,7 +101,7 @@ function Header({ backButton }) {
                     horizontal: 'right',
                 }}
             >
-                <List>
+                <List style={{ zIndex: 1000, position: 'relative' }}>
                     {notifications.map((notification, index) => (
                         <ListItem button key={index}>
                             <ListItemText primary={notification} />
@@ -91,16 +109,6 @@ function Header({ backButton }) {
                     ))}
                 </List>
             </Popover>
-
-            <IconButton onClick={toggleDarkMode}> {/* Dark mode button */}
-                <DarkModeIcon fontSize='large' className='header__icon' />
-            </IconButton>
-
-            <Link to='/chat'>
-                <IconButton>
-                    <ForumIcon fontSize='large' className='header__icon' />
-                </IconButton>
-            </Link>
         </div>
     );
 }
