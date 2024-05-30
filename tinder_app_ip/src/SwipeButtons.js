@@ -10,13 +10,13 @@ function SwipeButtons({ onUndo, onSwipeLeft, onSwipeRight }) {
   
   return (
     <div className="swipeButtons">
-      <IconButton onClick={onUndo}>
+      <IconButton onClick={onUndo} className="swipeButtons-dark">
         <ReplayIcon fontSize="large" className="swipeButtons__repeat" />
       </IconButton>
-      <IconButton onClick={onSwipeLeft}>
+      <IconButton onClick={onSwipeLeft} className="swipeButtons-dark">
         <CloseIcon fontSize="large" className="swipeButtons__left" />
       </IconButton>
-      <IconButton onClick={onSwipeRight}>
+      <IconButton onClick={onSwipeRight} className="swipeButtons-dark">
         <FavoriteIcon fontSize="large" className="swipeButtons__right" />
       </IconButton>
     </div>

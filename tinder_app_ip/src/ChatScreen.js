@@ -57,28 +57,9 @@ function ChatScreen() {
                 const messagesData = snapshot.docs.map(doc => doc.data());
                 setMessages(messagesData);
             });
-    
-        // Fetch notifications and format them as "<sender>: <message>"
-        const fetchNotifications = async () => {
-            try {
-                const matchedUserDoc = await firebase.firestore().collection('people').doc(person).get();
-                if (matchedUserDoc.exists) {
-                    const userData = matchedUserDoc.data();
-                    const formattedNotifications = userData.notifications.map(notification => `${notification.sender}: ${notification.content}`);
-                    setNotifications(formattedNotifications);
-                } else {
-                    setNotifications([]);
-                }
-            } catch (error) {
-                console.error('Error fetching notifications:', error);
-            }
-        };
-    
-        fetchNotifications();
-    
+
         return () => unsubscribe();
     }, [person, currentUser.uid]);
-    
     
 
     const handleSend = async (e) => {
@@ -91,17 +72,14 @@ function ChatScreen() {
             try {
                 // Add the message to the 'messages' collection
                 await firebase.firestore().collection('messages').add(newMessage);
-            
+                // Get the current user's name
+                const userDoc = await firebase.firestore().collection('people').doc(currentUser.uid).get();
+                const userName = userDoc.data().name;
                 // Add the notification to the receiver's 'people' document
                 await firebase.firestore().collection('people').doc(person).update({
-                  notifications: firebase.firestore.FieldValue.arrayUnion({
-                    type: 'message',
-                    content: input,
-                    sender: currentUser.uid,
-                    timestamp: new Date()
-                  })
+                    notifications: firebase.firestore.FieldValue.arrayUnion(`Message from ${userName}: ${input}`)
                 });
-            
+                
                 console.log('Message sent and notification added');
               } catch (error) {
                 console.error('Error sending message:', error);
@@ -128,20 +106,19 @@ function ChatScreen() {
                 ))}
                 <div ref={messagesEndRef} style={{ float: 'left', clear: 'both' }} /> {/* Element de referință pentru scroll */}
             </div>
-            <form className='chatScreen__input' onSubmit={handleSend}>
+            <form className='chatScreen__input dark' onSubmit={handleSend}>
                 <input value={input} onChange={(e) => setInput(e.target.value)} className='chatScreen__inputField' type='text' placeholder='Type a message...' />
-                <button type='submit' className='chatScreen__inputButton'>SEND</button>
+                <button type='submit' className='chatScreen__inputButton settings-button'>SEND</button>
             </form>
             
-           {/* Display notifications */}
+            {/* Display notifications */}
             {/* <div className="notifications">
                 {notifications.map((notification, index) => (
                     <div key={index} className="notification">
-                        {notification.sender}: {notification.content}
+                        {notification.content} - {notification.sender}
                     </div>
                 ))}
             </div> */}
-
         </div>
     );
 }

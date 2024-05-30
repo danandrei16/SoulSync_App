@@ -191,10 +191,10 @@ function ProfileSettings() {
       console.error("Error updating profile picture:", error);
     }
   };
-
+  
   return (
     <div>
-      <h1>User Profile</h1>
+      <h1 className="dark-user-profile">User Profile</h1>
 
       <form onSubmit={(e) => e.preventDefault()}>
         <label className="input-label profile-picture-label">
@@ -209,7 +209,7 @@ function ProfileSettings() {
             <img src={pictureUrl} alt="Profile" className="profile-picture-preview" />
           )}
         </label>
-        <button type="button" className="save-button" onClick={handleSavePicture}>
+        <button type="button" className="save-button settings-button" onClick={handleSavePicture}>
           Save Picture
         </button>
       </form>
@@ -295,7 +295,7 @@ function ProfileSettings() {
           </select>
         </label>
 
-        <button type="submit" className="save-button">
+        <button type="submit" className="save-button settings-button">
           Save Information
         </button>
         {savedMessage && <p>{savedMessage}</p>}

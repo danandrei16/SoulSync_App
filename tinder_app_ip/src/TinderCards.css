@@ -1,15 +1,15 @@
-/* Card Styles */
 .card {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    width: 100vw;
+    width: 100vw; /* Adjust to match the container width */
     max-width: 350px;
     height: 400px;
     border-radius: 20px;
     background-size: cover;
     background-position: center;
-    overflow: hidden;
+    overflow: hidden; /* Ensure button is not visible outside the card */
+    position: relative; /* Ensure button is positioned relative to the card */
 }
 
 .card > h3 {
@@ -19,22 +19,20 @@
     color: white;
 }
 
-/* TinderCards Container Styles */
 .tinderCards__cardContainer {
     position: relative;
-    width: 100%;
-    height: 400px;
+    width: 100%; /* Ensure the container spans the entire width */
+    height: 400px; /* Set a fixed height for the container */
     display: flex;
     justify-content: center;
     margin-top: 7vh;
-    overflow: hidden;
+    overflow: hidden; /* Hide overflow to prevent scrollbar */
 }
 
-/* Button Styles for Showing Details and Undo */
 .showDetailsButton,
 .undoButton {
     position: absolute;
-    bottom: 0px;
+    bottom: 10px; /* Adjust to desired position */
     left: 50%;
     transform: translateX(-50%);
     background: none;
@@ -71,49 +69,49 @@
     fill: lightgrey;
 }
 
-/* Card Container and Details Styles */
 .cardContainer {
     position: relative;
     width: 100%;
     height: 400px;
     border-radius: 200px;
     overflow: hidden;
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Adjust as needed */
+    
 }
 
 .cardContainer .details {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-54%, -50%);
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
-    width: 100vw;
+    display: none;
+    width: 100vw; /* Ajustează pentru a se potrivi cu lățimea containerului */
     max-width: 350px;
     height: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 20px;
-    font-size: 1.0em;
-    margin-left: 20px;
-    color: #191a1b96;
-    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; /* Ensure smooth transition */
+    display: flex; /* Folosește flexbox */
+    justify-content: center; /* Centrează orizontal conținutul */
+    align-items: left; /* Centrează vertical conținutul */
+    flex-direction: column; /* Stabilește direcția coloanelor pentru a adăuga un item pe fiecare linie */
+    padding: 20px; /* Adaugă spațiu în jurul conținutului */
+    font-size: 1.0em; /* Setează dimensiunea fontului */
+    margin-left: 20px; /* Mărește marginea stângă a textului */
+    color: #191a1b96
 }
 
-.cardContainer .details p {
-    margin-bottom: 15px;
+.cardContainer .details p{
+    margin-bottom: 15px; /* Adaugă o linie nouă după fiecare item */
+    margin-right: 5px; /* Mărește marginea dreaptă a textului */
 }
 
 .details-label {
-    font-weight: bold;
+    font-weight: bold; /* Face textul "nume:" și "prenume:" bolduit */
 }
 
-/* Match Confirmation Styles */
 .matchConfirmation {
     position: fixed;
-    top: 20vh;
+    top: 20vh; /* Adjust the vertical position as needed */
     left: 50%;
     transform: translateX(-50%);
     background-color: #fff;
@@ -122,79 +120,4 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     text-align: center;
-}
-
-/* SwipeButtons Styles */
-.swipeButtons {
-    position: fixed; /* Fixed positioning to place it at the bottom of the viewport */
-    bottom: 20px; /* Adjust this value to position the buttons lower */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%);
-    display: flex;
-    width: 100%;
-    justify-content: space-evenly;
-    padding: 10px;
-    z-index: 1000; /* Ensure it stays above other elements */
-}
-
-.swipeButtons .MuiIconButton-root {
-    background-color: #fff;
-    box-shadow: 0px 10px 53px 0px rgba(0, 0, 0, .3) !important;
-    padding: 10px !important;
-}
-
-.swipeButtons__repeat,
-.swipeButtons__left,
-.swipeButtons__right {
-    padding: 1.5vw !important;
-}
-
-.swipeButtons__repeat {
-    color: #f5b748 !important;
-}
-
-.swipeButtons__left {
-    color: #ec5e6f !important;
-}
-
-.swipeButtons__right {
-    color: #76e2b3 !important;
-}
-
-/* Add keyframes for the slide-in animation */
-@keyframes slideIn {
-    from {
-        transform: translateY(-100%);
-        
-        opacity: 0;
-    }
-    to {
-        transform: translateX(-70%);
-        transform: translateY(-50%);
-        opacity: 1;
-    }
-}
-
-/* Add keyframes for the slide-out animation */
-@keyframes slideOut {
-    from {
-        transform: translateX(-50%) translateY(-50%);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(-50%) translateY(-150%);
-        opacity: 0;
-    }
-}
-
-.cardContainer .details.show {
-    animation: slideIn 0.5s forwards; /* Apply slide-in animation */
-}
-
-.cardContainer .details.hide {
-    animation: slideOut 0.5s forwards; /* Apply slide-out animation */
-}
-
-.cardContainer .details p {
-    margin-bottom: 15px;
 }
