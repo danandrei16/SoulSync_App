@@ -11,7 +11,7 @@ function TinderCards() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showDetails, setShowDetails] = useState(false); // State to control showing user details
+    const [showDetails, setShowDetails] = useState(true); // State to control showing user details
     const [showMatch, setShowMatch] = useState(false); // State to control showing match confirmation
     const { currentUser } = useAuth(); // Get the currently authenticated user from the auth context
     const [swipeHistory, setSwipeHistory] = useState([]); // Manage swipe history
@@ -121,6 +121,12 @@ function TinderCards() {
                     const notificationMessage = `You matched with ${swipedPersonData.name}!`;
                     await currentUserRef.update({ notifications: firebase.firestore.FieldValue.arrayUnion(notificationMessage) });
 
+                    // give notification to the other person too
+                    const otherNotification = `You matched with ${currentUserData.name}!`;
+                    const otherPersonRef = firebase.firestore().collection('people').doc(personId);
+                    await otherPersonRef.update({ notifications: firebase.firestore.FieldValue.arrayUnion(otherNotification) });
+
+
                     setTimeout(() => {
                         setShowMatch(false);
                     }, 3000); // Hide match confirmation after 3 seconds
@@ -129,7 +135,7 @@ function TinderCards() {
             
             setSwipeHistory([...swipeHistory, { direction, personId }]);
             setCurrentIndex(currentIndex + 1);
-            setShowDetails(false);
+            setShowDetails(true);
         } catch (error) {
             console.error('Error updating swipes:', error);
         }
@@ -217,11 +223,11 @@ function TinderCards() {
                     >
                         <div className='cardContainer' style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '20px', overflow: 'hidden', marginBottom: '20px' }}>
                             <div style={{ backgroundImage: `url(${person.picture})`, backgroundSize: 'cover', backgroundPosition: 'center', width: '100vw', maxWidth: '350px', height: '400px', borderRadius: '20px', position: 'relative', overflow: 'hidden' }} className='card'>
-                                <h3 style={{ position: 'absolute', bottom: '10px', left: '10px', color: 'white' }}>{person.name}, {person.age}, {person.compatibilityScore}%</h3>
+                                <h3 style={{ position: 'absolute', bottom: '10px', left: '10px', color: 'white' }}>{person.name}, {person.age}</h3>
                                 <div className={`details ${showDetails ? 'show' : 'hide'}`} style={{
                                     position: 'absolute',
                                     top: '50%',
-                                    left: `${showDetails ? '-10%' : '45.37%'}`, // Adjusted left property
+                                    left: `${showDetails ? '-70%' : '45.37%'}`, // Adjusted left property
                                     transform: 'translate(-50%, -50%)',
                                     backgroundColor: 'rgba(255, 255, 255, 0.8)',
                                     borderRadius: '10px',
@@ -237,12 +243,19 @@ function TinderCards() {
                                     marginLeft: '20px',
                                     color: '#191a1b96'
                                 }}>
-                                    <p><strong>Description: </strong> <br></br>{person.description}</p>
+                                    <p><strong>Description: </strong>{person.description}</p>
                                     <p><strong>Location:</strong> {person.location}</p>
                                     <p><strong>Gender:</strong> {person.gender}</p>
                                     <p><strong>Height:</strong> {person.height}</p>
                                     <p><strong>Star Sign:</strong> {person.starSign}</p>
                                     <p><strong>Looking for:</strong> {person.lookingFor}</p>
+                                    <br></br>
+                                    <p style={{ fontFamily: 'Comic Sans MS' }}>
+                                        <strong>Based on your sign your compatibility with </strong> 
+                                        <span style={{ color: '#191a1b96', fontWeight: 'bold' }}>{person.starSign}</span> 
+                                        <strong> is </strong> 
+                                        <span style={{ color: '#191a1b96', fontWeight: 'bold' }}>{person.compatibilityScore}%</span>
+                                    </p>
                                 </div>
                             </div>
                             {showDetails ? (

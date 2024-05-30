@@ -6,7 +6,6 @@ import { auth } from "./firebase";
 import { IconButton } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/Logout';
 import Card from './Card'; // Import the Card component
-
 import './UserProfile.css'; // Import CSS file for styling
 
 function UserProfile( {backButton} ) {
@@ -31,6 +30,7 @@ function UserProfile( {backButton} ) {
   }, []);
   
 
+  
   // Function to handle logout
   const handleLogout = async () => {
       try {
@@ -63,12 +63,13 @@ function UserProfile( {backButton} ) {
     }
   };
 
+
   return (
     <div>
 
-      <div className="user-profile">
+      <div className="user-profile dark">
       <div>
-            <h1>User Profile</h1>
+            <h1 className="dark-user-profile">User Profile</h1>
             {/* Render the Tinder card for the current user */}
             <div>
                 <Card />
