@@ -102,7 +102,7 @@
 
 .cardContainer .details p{
     margin-bottom: 15px; /* Adaugă o linie nouă după fiecare item */
-    margin-right: 5px; /* Mărește marginea dreaptă a textului */
+    margin-right: 8px; /* Mărește marginea dreaptă a textului */
 }
 
 .details-label {
@@ -120,4 +120,17 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     text-align: center;
+}
+
+/* Add this at the end of your CSS file */
+.details {
+    transition: left 0.5s ease-in-out;
+}
+
+.details.show {
+    left: 50%; /* Final position when shown */
+}
+
+.details.hide {
+    left: 120%; /* Off-screen position when hidden */
 }

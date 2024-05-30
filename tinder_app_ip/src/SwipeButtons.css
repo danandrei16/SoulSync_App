@@ -10,7 +10,7 @@
 
 .swipeButtons .MuiIconButton-root {
     background-color: #fff;
-    box-shadow: 0px 10px 53px 0px #6a0dad; /* Adaugă umbra butoanelor */
+    box-shadow: 0px 10px 50px -2px #6a0dad; /* Adaugă umbra butoanelor */
     padding: 10px !important; /* Padding mai mic pentru butoanele mai mici */
 }
 

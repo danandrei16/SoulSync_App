@@ -302,8 +302,6 @@ function ProfileSettings() {
       </form>
 
       <br/>
-
-      <Link to="/profile">Go to Profile</Link>
     </div>
   );
 }
